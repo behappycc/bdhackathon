@@ -60,3 +60,7 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+#LDA model
+src/OtsukaAi
+src/Japan_Travel
