@@ -2,11 +2,17 @@
 big data hackathon [link](http://www.bdhackathon.org.tw/).
 
 ## Installation
-1. Python3
-2. Tornado
-3. mongoDB
-4. pymongo
-5. gensim
+* Python3
+* mongoDB ([install on Ubuntu 14.04](https://www.liquidweb.com/kb/how-to-install-mongodb-on-ubuntu-14-04/), [GUI](http://edgytech.com/umongo/))
+
+Dump and restore
+```
+mongodump --db DataBaseName
+mongorestore --db DataBaseName /path/to/DataBaseName
+```
+Note that /path/to/DataBaseName should be a directory filled with .json and .bson representations of your data
+
+* pip install -r requirement.txt
 
 ##Coding Style
 Google Python Style Guide [link](https://google.github.io/styleguide/pyguide.html).
