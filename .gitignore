@@ -64,3 +64,6 @@ target/
 #LDA model
 src/OtsukaAi
 src/Japan_Travel
+
+#mongoDB backup
+src/dump
