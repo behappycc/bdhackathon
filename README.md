@@ -27,7 +27,7 @@ $ python3 Server.py -p 8888
 
 ### Data Analysis
 ```
-$ cd bdhackathon/web
+$ cd bdhackathon/src
 $ python3 ptt_crawler.py -b Japan_Travel -l
 $ python3 topic_analyze.py -b Japan_Travel
 $ python3 topic_label.py -b Japan_Travel 

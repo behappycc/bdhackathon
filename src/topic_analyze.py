@@ -55,10 +55,15 @@ def learnLDA(collection):
     print("learning model")
 
     key_word = []
-
-    articles = collection.find()
-    for article in articles:
-        key_word.append(splitWord(article['article_title']))
+    #articles = collection.find():
+    for article in collection.find().batch_size(30):
+        try:
+            #train LDA with article_title
+            #key_word.append(splitWord(article['article_title']))
+            #train LDA with content <- need more time
+            key_word.append(splitWord(article['content']))
+        except Exception as e:
+            print("exception")
 
     # lda
     global dictionary
