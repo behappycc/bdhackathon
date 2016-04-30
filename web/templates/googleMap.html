@@ -5,6 +5,14 @@
 		<meta charset="utf-8">
 		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 		<title>Directions service (complex)</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<script src="http://code.jquery.com/jquery-1.9.1.js" ></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" ></script>
+		<script src="http://files.tonyq.org/jqueryui/jquery.ui.datepicker-zh-TW.min.js" ></script> 
+
+		<!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<style type="text/css">
 		html, body {
 			height: 100%;
@@ -32,31 +40,72 @@
 			line-height: 30px;
 			padding-left: 10px;
 		}
+
+		input[type="range"]{
+		  -webkit-appearance: none;
+		  border-radius:2px;
+		  width:200px;
+		  height:3px;
+		  background-image:-webkit-linear-gradient(left ,#f22 0%,#f22 50%,#fff 50%, #fff 100%);
+		  box-shadow:inset #ebb 0 0 5px;
+		  outline : none;
+		  transition:.1s;
+		}
+		input[type="range"]::-webkit-slider-thumb{
+		  -webkit-appearance: none;
+		  width:10px;
+		  height:10px;
+		  background:#f22;
+		  border-radius:50%;
+		  transition:.1s;
+		}
+		input[type="range"]::-webkit-slider-thumb:hover,
+		input[type="range"]::-webkit-slider-thumb:active{
+		  width:16px;
+		  height:16px;
+		}
 		</style>
 	</head>
-	<body>
-
+	<body>	
 	
-
-	<div id="form_div">
-		<form>
+	<h2>Horizontal form</h2>
+	<form class="form-horizontal" role="form">
+		<div class="form-group">
+			<b>Date: </b>
+			<input type="text" id="Date" />
 			<b>Druation: </b>
-			<select id="Druation"></select>
+			<select id="Druation"></select><br>
+			
 			<b>Start Airport: </b>
 			<select id="startAirport"></select>
-			<b>End Airport: </b>
-			<select id="endAirport"></select><br>
-			
 			<b>Start Time: </b>
-			<select id="startTime"></select>
+			<select id="startTime"></select><br>
+			
+			<b>End Airport: </b>
+			<select id="endAirport"></select>
 			<b>End Time: </b>
 			<select id="endTime"></select><br>
 			
+			<b>Budget: </b>
+			<select id="Budget">
+				<option value="low">低</option>
+				<option value="mid">中</option>
+				<option value="high">高</option>
+			</select><br>
+			
 			請勾選你的興趣<br>
-			<div id="checkboxList"></div>
-			<input type="submit" value="submit">
-		</form>
-	</div>
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox" id="checkboxList"></div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="submit" value="submit" class="btn btn-primary">
+				</div>
+			</div>
+			<input type="button" value="submit" onclick="sendForm();">
+		</div>
+	</form>
+	
 
 
 	<div id="floating-panel">
@@ -67,21 +116,18 @@
 		</select>
 		<b>End: </b>
 		<select id="end">
-			<!--<option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
-			<option value="35.829905, 140.390619">成田機場</option>-->
+			<!--<option value="35.829905, 140.390619">成田機場</option>-->
 			<option value="Akihabara, Taito, Tokyo 110-0006日本">秋葉原</option>
 		</select>
 	</div>
 
-	<!--<div id="all" style="float:left;width:100%; height:100%"></div>-->
-	<div id="map" style="float:left;width:80%; height:80%"></div>
-	<div id="directionsPanel" style="float:right;width:20%;height:80%"></div>
+	<div id="map" style="float:left;width:80%; height:60%"></div>
+	<div id="directionsPanel" style="float:right;width:20%;height:60%"></div>
 	&nbsp;
-	<div id="warnings-panel" style="float:right;width:80%;height:20%"></div>
-	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-	
+	<div id="warnings-panel" style="float:right;width:80%;height:10%"></div>
+
 	<script type="text/javascript">
+		$("#Date").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
 		// user input
 		var t;
 		function loadJSON(name, callback) {
@@ -110,7 +156,7 @@
 			}
 		}
 		function initDuration(x) {
-			for(var i=5; i<8;i++){
+			for(var i=5; i<15;i++){
 				var new_option = new Option(i+"天", i);
 				x.options.add(new_option);
 			}
@@ -125,8 +171,38 @@
 			
 			var label = document.createElement('label')
 			label.for = id;
-			label.innerHTML = categoy+"<br>";
+			label.innerHTML = categoy;
 			document.getElementById("checkboxList").appendChild(label)
+			
+			var x = document.createElement("INPUT");
+			x.setAttribute("id", "range"+id);
+			x.setAttribute("type", "range");
+			x.setAttribute("min", "0");
+			x.setAttribute("max", "100");
+			x.setAttribute("value", "0");
+			document.getElementById("checkboxList").appendChild(x);
+
+			var label = document.createElement('label')
+			label.innerHTML = "<p><p>";
+			document.getElementById("checkboxList").appendChild(label)
+		}
+		data = {};
+		function sendForm() {
+			data["Druation"] = document.getElementById("Druation").value;
+			data["Date"] = document.getElementById("Date").value;
+			data["startTime"] = document.getElementById("startTime").value;
+			data["endTime"] = document.getElementById("endTime").value;
+			data["startAirport"] = document.getElementById("startAirport").value;
+			data["endAirport"] = document.getElementById("endAirport").value;
+			data["Budget"] = document.getElementById("Budget").value;
+			data["Budget"] = document.getElementById("Budget").value;
+			data["like"]={};
+			for (var i=0; i < Object.keys(like).length; i++) {
+				if (document.getElementById(i).checked) {
+					data["like"][i] = document.getElementById("range"+i).value;
+				}
+				else data["like"][i] = 0;
+			}
 		}
 
 		initTime(document.getElementById("startTime"))
@@ -134,11 +210,11 @@
 		initAirport(document.getElementById("startAirport"))
 		initAirport(document.getElementById("endAirport"))
 		initDuration(document.getElementById("Druation"))
-		var category;
-		loadJSON('../../src/nlp/category.json',function(response) {
-			category = JSON.parse(response);
-			for(var i=0; i<Object.keys(category).length; i++){
-				initCheckbox(i, category[i]);
+		var like;
+		loadJSON('like.json',function(response) {
+			like = JSON.parse(response);
+			for(var i=0; i < Object.keys(like).length; i++){
+				initCheckbox(i, like[i]);
 			}
 		});
 	</script>
@@ -163,13 +239,13 @@
 
 			for(var i=1; i < 5; i++){
 				waypts.push({
-					//location: "2 Chome-3-1 Asakusa、Taito, Tokyo 111-0032、日本",
 					location: ans[ansObj[i]].coord+"",
 					stopover: true
 				});
 			}
 		});
 	</script>
+
 	<script type="text/javascript">
 		var test;
 		function initMap() {
