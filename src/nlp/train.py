@@ -4,7 +4,7 @@ from web_util import load_json, write_json
 import os
 import jieba
 import jieba.posseg as pseg
-jieba.load_userdict('japan_dict.txt')
+jieba.load_userdict('dict.txt.big')
 import re
 #import extraDict
 #import operator
@@ -30,7 +30,7 @@ def main():
         corpus_data = {}
     corpus = []
     articles = collection.find({
-        "$or":[ 
+        "$or":[
         {"article_title": {"$regex": "\[[遊食]記\].*(東京)+.*"}, "date": {"$gt": d_start, "$lt": d_end}},
         {"article_title": {"$regex": "\[住宿\].*(東京)+.*"}, "date": {"$gt": d_start, "$lt": d_end}}]
     }, no_cursor_timeout=True).batch_size(20)
@@ -110,17 +110,21 @@ def main():
     vec_topic = {}
     print('%d topics identified. Classify them:' % len(topic))
 
+    old_corpus_data = load_json('old_model/corpus_data.json')
     for k, v in topic.items():
         print('Group %s (%d):' % (k, len(v)))
         for c_index in v:
             a_id = index_aid[str(c_index)]
-            if a_id in corpus_data.keys():
+            #if a_id in corpus_data.keys():
+            if a_id in old_corpus_data.keys():
                 #print(corpus_data[a_id]['topic'])
-                if not corpus_data[a_id]['topic']:
+                if not old_corpus_data[a_id]['topic']:
                     #print(corpus_data[a_id]['feature'])
                     print(tmp_data[a_id])
                     line = input('Enter topics, separate by space: ')
                     corpus_data[a_id]['topic'] = line.split(' ')
+                else:
+                    corpus_data[a_id]['topic'] = old_corpus_data[a_id]['topic']
             else:
                 raise ValueError('Empty article_id')
         write_json(corpus_data, 'corpus_data_labeled.json')
