@@ -5,6 +5,7 @@
             139.773407
         ],
         "popularity": 50,
+        "priceLevel": 2,
         "synonym": [],
         "topic": [
             "0"
@@ -16,6 +17,7 @@
             139.796655
         ],
         "popularity": 200,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "1",
@@ -29,6 +31,7 @@
             139.771487
         ],
         "popularity": 20,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "1",
@@ -41,6 +44,7 @@
             140.392775
         ],
         "popularity": 20000,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "7"
@@ -52,6 +56,7 @@
             140.386799
         ],
         "popularity": 10000,
+        "priceLevel": 4,
         "synonym": [],
         "topic": [
             "6"
@@ -63,6 +68,7 @@
             34.12321334
         ],
         "popularity": 1000,
+        "priceLevel": 4,
         "synonym": [],
         "topic": [
             "0",
@@ -77,6 +83,7 @@
             34.12321334
         ],
         "popularity": 2000,
+        "priceLevel": 2,
         "synonym": [],
         "topic": [
             "0",
@@ -89,6 +96,7 @@
             34.12321334
         ],
         "popularity": 200,
+        "priceLevel": 2,
         "synonym": [],
         "topic": [
             "8"
@@ -100,6 +108,7 @@
             34.12321334
         ],
         "popularity": 200,
+        "priceLevel": 3,
         "synonym": [],
         "topic": [
             "8"
@@ -111,6 +120,7 @@
             34.12321334
         ],
         "popularity": 5000,
+        "priceLevel": 3,
         "synonym": [],
         "topic": [
             "0"
@@ -122,6 +132,7 @@
             34.12321334
         ],
         "popularity": 6000,
+        "priceLevel": 3,
         "synonym": [],
         "topic": [
             "0"
@@ -133,6 +144,7 @@
             34.12321334
         ],
         "popularity": 200000,
+        "priceLevel": 2,
         "synonym": [],
         "topic": [
             "1",
@@ -145,6 +157,7 @@
             34.12321334
         ],
         "popularity": 20000,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "1",
@@ -157,6 +170,7 @@
             34.12321334
         ],
         "popularity": 200,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "1",
@@ -169,6 +183,7 @@
             34.12321334
         ],
         "popularity": 5000,
+        "priceLevel": 1,
         "synonym": [],
         "topic": [
             "1",
@@ -181,6 +196,7 @@
             34.12321334
         ],
         "popularity": 2000,
+        "priceLevel": 2,
         "synonym": [],
         "topic": [
             "1",
@@ -193,6 +209,7 @@
             34.12321334
         ],
         "popularity": 20000,
+        "priceLevel": 4,
         "synonym": [],
         "topic": [
             "1",
@@ -206,6 +223,7 @@
             34.12321334
         ],
         "popularity": 12000,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "1",
@@ -219,6 +237,7 @@
             139.703867
         ],
         "popularity": 20000,
+        "priceLevel": 0,
         "synonym": [],
         "topic": [
             "1",

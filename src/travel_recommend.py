@@ -14,14 +14,13 @@ from datetime import datetime
 from recommender import Recommender
 
 def main():
-    startTime = datetime(2016,4,30,18)
-    endTime = datetime(2016,5,2,22)
+    startTime = datetime(2016,4,30,8)
+    endTime = datetime(2016,5,2,18)
 
     recom = Recommender()
     recom.setTimeInterval(startTime,endTime)
-    recom.setHabit({"2"})
-    recom.setLocation("")
-    recom.setBudget(50000)
+    recom.setHabit({"0":90,"1":40,"2":50})
+    recom.setBudget(1) # allow 1,2,3
     travelList = recom.recommend()
     print(travelList)
 
