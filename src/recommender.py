@@ -9,7 +9,19 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
+import os
+import web_util
+import json
 
+srcDir = os.path.dirname(os.path.realpath(__file__))
+
+class View():
+    def __init__(self,name,term):
+        self.name = name
+
+        self.popularity = term["popularity"]
+        self.coord = term["coord"]
+        self.topicList = term["topic"]
 
 class Recommender():
     def __init__(self):
@@ -19,9 +31,24 @@ class Recommender():
         self.location = None
         self.budget = 0
 
+        self.loadTerms()
+
+    def loadTerms(self):
+        print(srcDir)
+        termFile = os.path.join(srcDir,"nlp","term.json")
+        terms = web_util.load_json(termFile)
+        categoryFile = os.path.join(srcDir,"nlp","category.json")
+        categories = web_util.load_json(categoryFile)
+
+        self.candidateList = []
+        for term in terms:
+            view = View(term,terms[term])
+            self.candidateList.append(view)
+
     def setTimeInterval(self,start,end):
         self.startTime = start
         self.endTime = end
+        self.travelDays = 3
 
     def setHabit(self,habitDict):
         self.habitDict = habitDict
@@ -33,5 +60,10 @@ class Recommender():
         self.budget = budget
 
     def recommend(self):
-        pass
+        travelList = []
+        for day in range(self.travelDays):
+            travelList.append([])
+
+        return travelList
+
 

@@ -13,11 +13,11 @@ from recommender import Recommender
 
 def main():
     recom = Recommender()
-    recom.setTimeInterval()
-    recom.setHabit()
-    recom.setLocation()
-    recom.setBudget()
-    recom.recommend()
+    recom.setTimeInterval(0,1)
+    recom.setHabit({})
+    recom.setLocation("")
+    recom.setBudget(50000)
+    print(recom.recommend())
 
 if __name__ == '__main__':
     main()
