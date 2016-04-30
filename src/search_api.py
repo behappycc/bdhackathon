@@ -11,6 +11,13 @@ def get_geocode(input_text):
     return geocode_result
 
 
+def geocode_to_geopair(geocode_result):
+    if len(geocode_result) > 0:
+        loc = geocode_result[0].get('geometry').get('location')
+        return loc.get('lat'), loc.get('lng')
+    return 0, 0
+
+
 def get_nearby(location, radius=1000, s_type=None):
     places = gmaps.places_nearby(location=location, radius=radius, type=s_type)
     return places
@@ -39,7 +46,7 @@ def get_photos_from_places(places, maxwidth=400, debug=False):
 
 
 def test_api():
-    input_query = '東京 淺草'
+    input_query = '六本木之丘'
     geocode = get_geocode(input_query)
     if len(geocode) > 0:
         loc = geocode[0].get('geometry').get('location')
