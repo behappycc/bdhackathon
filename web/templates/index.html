@@ -516,7 +516,7 @@
                 <p class="lead" style="margin-top:0">A special thanks to Death.</p>
             </div>
             
-            <form role="form">
+            <form role="form" id="travelForm">
                 <div class="col-md-6">
                     <b>Date: </b>
                     <input type="text" id="Date" />
@@ -540,10 +540,9 @@
                         <option value="high">高</option>
                     </select><br>
                     請勾選你的興趣<br>
-                    <div id="checkboxList">
-                    </div>
-                    <input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">
-                    <input type="button" value="submit" onclick="sendForm();">
+                    <div id="checkboxList"></div>
+                    <!--<input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">-->
+                    <input type="button" value="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">
                 </div>
             </form>
 
@@ -614,10 +613,10 @@
         </select>
     </div>
 
-    <div id="map" style="float:left;width:80%; height:80%"></div>
-    <div id="directionsPanel" style="float:right;width:20%;height:80%"></div>
+    <div id="map" style="float:left;width:85%; height:85%"></div>
+    <div id="directionsPanel" style="float:right;width:15%;height:85%"></div>
     &nbsp;
-    <div id="warnings-panel" style="float:right;width:80%;height:10%"></div>    
+    <div id="warnings-panel" style="float:right;width:85%;height:15%"></div>    
     
     
     <footer>
@@ -745,24 +744,26 @@
             label.innerHTML = "<p>";
             document.getElementById("checkboxList").appendChild(label)
         }
-        data = {};
+        params = {};
         function sendForm() {
-            data["Druation"] = document.getElementById("Druation").value;
-            data["Date"] = document.getElementById("Date").value;
-            data["startTime"] = document.getElementById("startTime").value;
-            data["endTime"] = document.getElementById("endTime").value;
-            data["startAirport"] = document.getElementById("startAirport").value;
-            data["endAirport"] = document.getElementById("endAirport").value;
-            data["Budget"] = document.getElementById("Budget").value;
-            data["Budget"] = document.getElementById("Budget").value;
-            data["like"]={};
+            params["Druation"] = document.getElementById("Druation").value;
+            params["Date"] = document.getElementById("Date").value;
+            params["startTime"] = document.getElementById("startTime").value;
+            params["endTime"] = document.getElementById("endTime").value;
+            params["startAirport"] = document.getElementById("startAirport").value;
+            params["endAirport"] = document.getElementById("endAirport").value;
+            params["Budget"] = document.getElementById("Budget").value;
+            params["Budget"] = document.getElementById("Budget").value;
+            params["like"]={};
             for (var i=0; i < Object.keys(like).length; i++) {
                 if (document.getElementById(i).checked) {
-                    data["like"][i] = document.getElementById("range"+i).value;
+                    params["like"][i] = document.getElementById("range"+i).value;
                 }
-                else data["like"][i] = 0;
+                else params["like"][i] = 0;
             }
+            //$("#travelForm").submit();
         }
+
         $("#Date").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
         initTime(document.getElementById("startTime"))
         initTime(document.getElementById("endTime"))
