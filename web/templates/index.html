@@ -95,7 +95,7 @@
         #floating-panel {
             position: absolute;
             //top: 10px;
-            left: 25%;
+            left: 60%;
             z-index: 5;
             background-color: #fff;
             padding: 5px;
@@ -155,6 +155,8 @@
                                 ans = JSON.parse(jsonResponse);
                                 initTravelTime(document.getElementById("travelTime"));
                                 wayptsChange(1);
+                                $("table").children().remove()
+                                buildTable();
                             },
                             error: function () {
                                 $("#responsefield").text("Error to load api");
@@ -676,35 +678,27 @@
 
     <b>時間: </b>
     <select id="travelTime" onchange="travelTimeChange()"></select><br>
-    <div id="floating-panel">
-        <b>Start: </b>
-        <select id="start">
-            <option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
-                <!--<option value="1-1 Maihama, Urayasu, Chiba Prefecture 279-0031日本">東京迪士尼</option>-->
-        </select>
-        <b>End: </b>
-        <select id="end">
-        <!--<option value="35.829905, 140.390619">成田機場</option>-->
-        <option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
-        </select>
-    </div>
+    
 
-    <div id="map" style="float:left;width:85%; height:85%"></div>
-    <div style="text-align:center;width:50%;">
+
+    <div id="map" style="float:right;width:65%; height:85%"></div>
+    <div style="float:left;width:35%;">
         <table id="table" class='table' border='5' bgcolor='#88EEEE'>
-        <tr class='red'> <td class='red'>userName</td> <td> <span id="userName" >1</span> </td> </tr>
-        <tr> <td class='red'>apkName</td> <td> <span id="apkName" >2</span> </td> </tr>
-        <tr> <td class='red'>algorithm</td> <td> <span id="algorithm" >3</span> </td></tr>
-        <tr> <td class='red'>cellphone</td> <td> <span id="testPhone" >4</span> </td> </tr>
-        <tr> <td class='red'>android</td> <td> <span id="android" >5</span> </td> </tr>
-        <tr> <td class='red'>tracelength</td> <td> <span id="tracelength" >6</span> </td> </tr>
-        <tr> <td class='red'>traceAmount</td> <td> <span id="maxAmount" >7</span></td> </tr>
-        <tr> <td class='red'>ExecuteTime(Sec)</td> <td> <span id="ExecuteTime" >8</span></td> </tr>
-        <tr> <td colspan="2">
-            test set: <input type="number" id="traceAmount" min="1" max="1" value="1">
-            <input type="button" value="lookCoverage"> </td></tr>
+        <TH>place</TH><TH>popularity</TH><TH>topic</TH><TH>priceLevel</TH>
         </table>
     </div>
+    <div id="floating-panel" style="float:right;width:30%;">
+	        <b>Start: </b>
+	        <select id="start">
+	            <option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
+	                <!--<option value="1-1 Maihama, Urayasu, Chiba Prefecture 279-0031日本">東京迪士尼</option>-->
+	        </select>
+	        <b>End: </b>
+	        <select id="end">
+	        <!--<option value="35.829905, 140.390619">成田機場</option>-->
+	        <option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
+	        </select>
+	</div>
     <div id="directionsPanel" style="float:right;width:15%;height:85%"></div>
     &nbsp;
     <div id="warnings-panel" style="float:right;width:85%;height:15%"></div>    
@@ -876,12 +870,6 @@
         //server response
         var ans;
         var waypts = []
-        /*loadJSON('static/travelList.json',function(response) {
-            ans = JSON.parse(response);
-            initTravelTime(document.getElementById("travelTime"));
-            wayptsChange(1);
-        });*/
-
         var today;
         function wayptsChange(selectTime) {
             waypts=[]
@@ -928,7 +916,40 @@
         }
         function travelTimeChange() {
             selectTime = document.getElementById("travelTime").value;
-            wayptsChange(selectTime)
+            wayptsChange(selectTime);
+            $("table").children().remove()
+            buildTable();
+        }
+
+        function buildTable() {
+            var table = document.getElementById("table");
+            var header = table.createTHead();
+            var row = header.insertRow(0);
+            var place = row.insertCell(0);
+		    var popularity = row.insertCell(1);
+		    var topic = row.insertCell(2);
+		    var priceLevel = row.insertCell(3);
+		    place.innerHTML = "place";
+		    popularity.innerHTML = "popularity";
+		    topic.innerHTML = "topic";
+		    priceLevel.innerHTML = "priceLevel";
+
+            for(var n=0; n < todayObj.length; n++){
+            	for(var i=0; i < todayObj.length; i++){
+	            	if(today[todayObj[i]].order == n){
+		            	var row = table.insertRow(-1);
+		                var place = row.insertCell(0);
+		                var popularity = row.insertCell(1);
+		                var topic = row.insertCell(2);
+		                var priceLevel = row.insertCell(3);
+		                
+		                place.innerHTML = todayObj[i];
+		                popularity.innerHTML = today[todayObj[i]].popularity;
+		                topic.innerHTML = today[todayObj[i]].topic;
+		                priceLevel.innerHTML = today[todayObj[i]].priceLevel;
+	            	}
+            	}
+        	}
         }
     </script>
 
