@@ -43,8 +43,8 @@ def main():
     i = 0
     tmp_data = {}
     for article in articles:
-        if i==7:
-            break
+        #if i==7:
+        #    break
         tmp_data[article['article_id']] = (article['article_title'], article['content'])
         print(i)
         #print(article, article['article_title'])
@@ -82,7 +82,8 @@ def main():
     training_corpus_data = load_json('corpus_data.json')
 
     for testing_aid in testing_corpus_data.keys():
-        print(testing_corpus_data[testing_aid]['feature'])
+        #print(testing_corpus_data[testing_aid]['feature'])
+        print(testing_aid)
         vec_bow = dictionary.doc2bow(testing_corpus_data[testing_aid]['feature'])
         vec_tfidf = tfidf[vec_bow]
         vec_lda = lda[vec_tfidf]  # convert the query to LDA space
@@ -93,8 +94,8 @@ def main():
         for training_aid in training_corpus_data.keys():
             if str(training_corpus_data[training_aid]['index']) == training_index:
                 testing_corpus_data[testing_aid]['topic'] = training_corpus_data[training_aid]['topic']
-                for t in testing_corpus_data[testing_aid]['topic']:
-                    print(category[t])
+                #for t in testing_corpus_data[testing_aid]['topic']:
+                    #print(category[t])
                 break
     write_json(testing_corpus_data, 'testing_corpus_data_label.json')
 	
