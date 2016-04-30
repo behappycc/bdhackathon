@@ -3,6 +3,7 @@
 	<head>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 		<title>Directions service (complex)</title>
 		<style type="text/css">
 		html, body {
@@ -20,7 +21,7 @@
 		}
 		#floating-panel {
 			position: absolute;
-			top: 10px;
+			//top: 10px;
 			left: 25%;
 			z-index: 5;
 			background-color: #fff;
@@ -35,40 +36,135 @@
 	</head>
 	<body>
 
-	<div id="floating-panel">
-	<b>Start: </b>
-	<select id="start">
-		<option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
-		<option value="1-1 Maihama, Urayasu, Chiba Prefecture 279-0031日本">東京迪士尼</option>
-	</select>
-	<b>End: </b>
-	<select id="end">
-		<option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
-		<option value="Akihabara, Taito, Tokyo 110-0006日本">秋葉原</option>
-	</select>
+	
+
+	<div id="form_div">
+		<form>
+			<b>Druation: </b>
+			<select id="Druation"></select>
+			<b>Start Airport: </b>
+			<select id="startAirport"></select>
+			<b>End Airport: </b>
+			<select id="endAirport"></select><br>
+			
+			<b>Start Time: </b>
+			<select id="startTime"></select>
+			<b>End Time: </b>
+			<select id="endTime"></select><br>
+			
+			請勾選你的興趣<br>
+			<div id="checkboxList"></div>
+			<input type="submit" value="submit">
+		</form>
 	</div>
-	<div id="map"></div>
+
+
+	<div id="floating-panel">
+		<b>Start: </b>
+		<select id="start">
+			<option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
+			<option value="1-1 Maihama, Urayasu, Chiba Prefecture 279-0031日本">東京迪士尼</option>
+		</select>
+		<b>End: </b>
+		<select id="end">
+			<option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
+			<option value="Akihabara, Taito, Tokyo 110-0006日本">秋葉原</option>
+		</select>
+	</div>
+
+	<!--<div id="all" style="float:left;width:100%; height:100%"></div>-->
+	<div id="map" style="float:left;width:80%; height:80%"></div>
+	<div id="directionsPanel" style="float:right;width:20%;height:80%"></div>
 	&nbsp;
-	<div id="warnings-panel"></div>
+	<div id="warnings-panel" style="float:right;width:80%;height:20%"></div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	
+	<script type="text/javascript">
+		// user input
+		var t;
+		function initAirport(x) {
+			var new_option = new Option("羽田機場", 0);
+			x.options.add(new_option);
+			var new_option = new Option("成田機場", 1);
+			x.options.add(new_option);
+		}
+		function initTime(x) {
+			for(var i=0; i<24;i++){
+				var new_option = new Option(i+":00", i);
+				x.options.add(new_option);
+			}
+		}
+		function initDuration(x) {
+			for(var i=5; i<8;i++){
+				var new_option = new Option(i+"天", i);
+				x.options.add(new_option);
+			}
+		}
+
+		function loadJSON(name, callback) {
+			var xobj = new XMLHttpRequest();
+			xobj.overrideMimeType("application/json");
+			xobj.open('GET', name, true);
+			xobj.onreadystatechange = function () {
+				if (xobj.readyState == 4 && xobj.status == "200") {
+				// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+					callback(xobj.responseText);
+				}
+			};
+			xobj.send(null);  
+		}
+		function initCheckbox(id, categoy) {
+			var x = document.createElement("input");
+			x.setAttribute("type", "checkbox");
+			x.setAttribute("id", id);
+			x.setAttribute("value", id);
+			document.getElementById("checkboxList").appendChild(x);
+			
+			var label = document.createElement('label')
+			label.for = id;
+			label.innerHTML = categoy+"<br>";
+			document.getElementById("checkboxList").appendChild(label)
+		}
+
+		initTime(document.getElementById("startTime"))
+		initTime(document.getElementById("endTime"))
+		initAirport(document.getElementById("startAirport"))
+		initAirport(document.getElementById("endAirport"))
+		initDuration(document.getElementById("Druation"))
+		var category;
+		loadJSON('../../src/nlp/category.json',function(response) {
+			category = JSON.parse(response);
+			for(var i=0; i<Object.keys(category).length; i++){
+				initCheckbox(i, category[i]);
+			}
+		});
+	</script>
 
 	<script type="text/javascript">
+		//server response
+		var ans;
+		loadJSON('../../src/nlp/term.json',function(response) {
+			ans = JSON.parse(response);
+		});
+	</script>
+	<script type="text/javascript">
+		var test;
 		function initMap() {
-			var markerArray = [];
 			// Instantiate a directions service.
 			var directionsService = new google.maps.DirectionsService;
-
 			// Create a map and center it on Manhattan.
 			var map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 11,
 				center: {lat: 35.42, lng: 139.46}
 			});
-
 			// Create a renderer for directions and bind it to the map.
 			var directionsDisplay = new google.maps.DirectionsRenderer({map: map});
 
 			// Instantiate an info window to hold step text.
 			var stepDisplay = new google.maps.InfoWindow;
 
+			var markerArray = [];
 			// Display the route between the initial start and end selections.
 			calculateAndDisplayRoute(directionsDisplay, directionsService, markerArray, stepDisplay, map);
 			// Listen to change events from the start and end lists.
@@ -90,7 +186,8 @@
 			directionsService.route({
 				origin: document.getElementById('start').value,
 				destination: document.getElementById('end').value,
-				travelMode: google.maps.TravelMode.WALKING
+				travelMode: google.maps.TravelMode.WALKING, //DRIVING, BICYCLING, TRANSIT, WALKING
+				unitSystem: google.maps.UnitSystem.METRIC //IMPERIAL: 英里; METRIC: 公里
 			}, function(response, status) {
 				// Route the directions and pass the response to a function to create
 				// markers for each step.
@@ -98,6 +195,7 @@
 					document.getElementById('warnings-panel').innerHTML =
 					'<b>' + response.routes[0].warnings + '</b>';
 					directionsDisplay.setDirections(response);
+					directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 					showSteps(response, markerArray, stepDisplay, map);
 				}
 				else {
@@ -115,7 +213,8 @@
 				var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
 				marker.setMap(map);
 				marker.setPosition(myRoute.steps[i].start_location);
-				attachInstructionText(stepDisplay, marker, myRoute.steps[i].instructions, map);
+				attachInstructionText(stepDisplay, marker, myRoute.steps[i].instructions.replace("<b>", "").replace("</b>", "")
+					+'"'+myRoute.steps[i].distance.text+'"', map);
 			}
 		}
 
