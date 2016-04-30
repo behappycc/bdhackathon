@@ -9,11 +9,16 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 
+from datetime import datetime
+
 from recommender import Recommender
 
 def main():
+    startTime = datetime(2016,4,30,18)
+    endTime = datetime(2016,5,2,22)
+
     recom = Recommender()
-    recom.setTimeInterval(0,1)
+    recom.setTimeInterval(startTime,endTime)
     recom.setHabit({"2"})
     recom.setLocation("")
     recom.setBudget(50000)

@@ -13,6 +13,7 @@ import os
 import web_util
 import json
 import random
+from datetime import datetime
 
 srcDir = os.path.dirname(os.path.realpath(__file__))
 
@@ -71,8 +72,8 @@ class Recommender():
         self.startTime = start
         self.endTime = end
 
-        #TODO
-        self.travelDays = 3
+        self.travelDays = (end-start).days + 1
+        print("travle days = ",self.travelDays)
 
     def setHabit(self,habitDict):
         self.habitDict = habitDict
@@ -87,13 +88,11 @@ class Recommender():
         returnList = []
 
         if not habitDict:
-            print("No habit.")
             for term in termList:
                 returnList.append((term,random.randint(1,10)))
 
             returnList = sorted(returnList,key=lambda x: x[1])
         else:
-            print("Recommend spot according to the habits.")
             for term in termList:
                 returnList.append((term,random.randint(1,10)))
 
@@ -121,28 +120,34 @@ class Recommender():
                 dayList.append(self.airportList[0])
 
                 # 09:00~12:00 spot
-                currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                dayList.append(currentSpot)
+                if self.startTime.hour < 12:
+                    currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
+                    dayList.append(currentSpot)
 
                 # 12:00~1330 launch
-                currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                dayList.append(currentSpot)
+                if self.startTime.hour < 14:
+                    currentSpot = self.evaluate(currentSpot,self.restaurantList)
+                    dayList.append(currentSpot)
 
                 # 1330~1600 spot
-                currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                dayList.append(currentSpot)
+                if self.startTime.hour < 16:
+                    currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
+                    dayList.append(currentSpot)
 
                 # 1600~1800 spot
-                currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                dayList.append(currentSpot)
+                if self.startTime.hour < 18:
+                    currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
+                    dayList.append(currentSpot)
 
                 # 1800~1930 dinner
-                currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                dayList.append(currentSpot)
+                if self.startTime.hour < 20:
+                    currentSpot = self.evaluate(currentSpot,self.restaurantList)
+                    dayList.append(currentSpot)
 
                 # 1930~2100 spot
-                currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                dayList.append(currentSpot)
+                if self.startTime.hour < 21:
+                    currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
+                    dayList.append(currentSpot)
 
                 # 2100~... sleep
                 currentSpot = self.evaluate(currentSpot,self.hotelList)
@@ -151,22 +156,30 @@ class Recommender():
             elif day == self.travelDays-1: # The last day, keep 6 hours in airport
                 print("Last Day.")
                 # 09:00~12:00 spot
-                currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                dayList.append(currentSpot)
+                if self.endTime.hour-3 > 9:
+                    currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
+                    dayList.append(currentSpot)
 
                 # 12:00~1330 launch
-                currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                dayList.append(currentSpot)
+                if self.endTime.hour-3 > 12:
+                    currentSpot = self.evaluate(currentSpot,self.restaurantList)
+                    dayList.append(currentSpot)
 
                 # 1330~1600 spot
-                currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                dayList.append(currentSpot)
+                if self.endTime.hour-3 > 14:
+                    currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
+                    dayList.append(currentSpot)
 
-                # Shop at tax-free shop
+                # 18:00~1930 launch
+                if self.endTime.hour-3 > 18:
+                    currentSpot = self.evaluate(currentSpot,self.restaurantList)
+                    dayList.append(currentSpot)
+
+                # Shop at tax-free shop 1hr
                 currentSpot = self.evaluate(currentSpot,self.taxfreeList)
                 dayList.append(currentSpot)
 
-                # end to airport
+                # end to airport and keep 2hr for waiting check in
                 dayList.append(self.airportList[0])
 
             else:
