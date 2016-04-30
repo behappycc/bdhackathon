@@ -3,6 +3,8 @@ from operator import itemgetter
 # mongodb module
 from pymongo import MongoClient
 
+from web_util import load_json
+
 DB_IP = "localhost"  # use local DB
 DB_PORT = 27017  # default MongoDB port
 DB_NAME = 'bdhackathon'  # use the collection
@@ -19,10 +21,18 @@ def search_db(collection, query):
     cursor_list = []
     cursor_count_list = []
     for q in query_list:
+        '''
         cursor = collection.find({"$or": [
             {"content": {'$regex': '(' + q + ')'}},
             {"article_title": {'$regex': '(' + q + ')'}}
         ]})
+        '''
+        # only need articles with special titiles (labeled), speed up
+        cursor = collection.find({"$or": [
+            {"content": {'$regex': '(' + q + ')'}, "$or": [{"article_title": {"$regex": "\[[遊食]記\].*(東京)+.*"}}, {"article_title": {"$regex": "\[住宿\].*(東京)+.*"}}]},
+            {"article_title": {'$regex': '(' + q + ')'}}
+        ]})        
+
         if cursor.count() == 0:
             continue
         # print query
