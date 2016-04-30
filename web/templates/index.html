@@ -540,8 +540,7 @@
                         <option value="high">高</option>
                     </select><br>
                     請勾選你的興趣<br>
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="checkbox" id="checkboxList"></div>
+                    <div id="checkboxList">
                     </div>
                     <input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">
                     <input type="button" value="submit" onclick="sendForm();">
@@ -685,7 +684,6 @@
     <!-- Magnific Popup core JS file -->
     <script src="static/js/jquery.magnific-popup.js"></script> 
     <script type="text/javascript">
-        $("#Date").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
         // user input
         var t;
         function loadJSON(name, callback) {
@@ -762,7 +760,7 @@
                 else data["like"][i] = 0;
             }
         }
-
+        $("#Date").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
         initTime(document.getElementById("startTime"))
         initTime(document.getElementById("endTime"))
         initAirport(document.getElementById("startAirport"))
@@ -853,7 +851,7 @@
                     document.getElementById('warnings-panel').innerHTML =
                     '<b>' + response.routes[0].warnings + '</b>';
                     directionsDisplay.setDirections(response);
-                    directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+                    //directionsDisplay.setPanel(document.getElementById("directionsPanel"));
                     //showSteps(response, markerArray, stepDisplay, map);
                 }
                 else {
