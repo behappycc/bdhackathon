@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        模块1
+# Name:        璅∪?1
 # Purpose:
 #
 # Author:      b9890_000
@@ -14,10 +14,11 @@ from recommender import Recommender
 def main():
     recom = Recommender()
     recom.setTimeInterval(0,1)
-    recom.setHabit({})
+    recom.setHabit({"2"})
     recom.setLocation("")
     recom.setBudget(50000)
-    print(recom.recommend())
+    travelList = recom.recommend()
+    print(travelList)
 
 if __name__ == '__main__':
     main()
