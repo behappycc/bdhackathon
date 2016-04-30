@@ -8,6 +8,8 @@ import os.path
 from datetime import datetime
 import time
 import sys
+from  tornado.escape import json_decode
+from  tornado.escape import json_encode
 
 # tornado module
 import tornado.httpserver
@@ -18,6 +20,8 @@ from tornado import gen
 #mongodb module
 import pymongo
 from pymongo import MongoClient
+
+sys.path.append("../src")
 
 DB_IP = "localhost"
 DB_PORT = 27017
@@ -45,6 +49,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", IndexHandler),
             (r"/index", IndexHandler),
+            (r"/schedule", ScheduleHandler),
         ]
 
         settings = dict(
@@ -52,14 +57,13 @@ class Application(tornado.web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             admin_path=os.path.join(os.path.dirname(__file__), "admin"),
             cookie_secret = "bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
-            xsrf_cookies= True,
+            xsrf_cookies= False,
             #login_url = '/auth/admin/login',
         )
         super(Application, self).__init__(handlers, **settings)
 
 class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        return self.get_secure_cookie("admin")
+    pass
 
 class IndexHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
@@ -70,6 +74,26 @@ class IndexHandler(tornado.web.RequestHandler):
 
     def post(self):
         pass
+
+class ScheduleHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, **kwargs):
+        super(ScheduleHandler, self).__init__(application, request, **kwargs)
+
+    def get(self):
+        self.write("hello")
+
+    def post(self):
+        json_obj = json_decode(self.request.body)
+        print('Post data received')
+
+        for key in list(json_obj.keys()):
+            print('key: %s , value: %s' % (key, json_obj[key]))
+
+        # new dictionary
+        response_to_send = {}
+        response_to_send['newkey'] = 'hello'
+        #print('Response to return')
+        self.write(json.dumps(response_to_send))
 
 if __name__ == '__main__':
     main()
