@@ -67,3 +67,6 @@ src/Japan_Travel
 
 #mongoDB backup
 src/dump
+
+#whoosh
+src/index

@@ -59,9 +59,9 @@ def learnLDA(collection):
     for article in collection.find().batch_size(30):
         try:
             #train LDA with article_title
-            #key_word.append(splitWord(article['article_title']))
+            key_word.append(splitWord(article['article_title']))
             #train LDA with content <- need more time
-            key_word.append(splitWord(article['content']))
+            #key_word.append(splitWord(article['content']))
         except Exception as e:
             print("exception")
 
@@ -74,9 +74,9 @@ def learnLDA(collection):
     corpus_tfidf = tfidf[corpus]
 
     global lda
-    lda = models.ldamodel.LdaModel(corpus=corpus_tfidf, id2word=dictionary, alpha='auto', num_topics=50)
+    lda = models.ldamodel.LdaModel(corpus=corpus_tfidf, id2word=dictionary, alpha='auto', num_topics=100)
     #print(lda.print_topics(50))
-    topic_weight = sorted(lda.print_topics(50), key=itemgetter(0))
+    topic_weight = sorted(lda.print_topics(100), key=itemgetter(0))
     with open("topic_weight.txt","w") as report:
         for tw in topic_weight:
             report.write(str(tw[1]))
