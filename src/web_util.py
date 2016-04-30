@@ -2,7 +2,7 @@ import os
 import json
 
 def load_json(path):
-    jsonFile = open(path)
+    jsonFile = open(path, encoding = 'utf8')
     data = json.load(jsonFile)
     jsonFile.close()
 
@@ -10,4 +10,4 @@ def load_json(path):
 
 def write_json(data,path):
     with open(path, "w") as outfile:
-        json.dump(data, outfile, indent=4)
+        json.dump(data, outfile, indent=4, ensure_ascii=False, sort_keys=True)
