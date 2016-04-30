@@ -39,8 +39,8 @@ def main():
     i = 0
     tmp_data = {}
     for article in articles:
-        if i==80:
-            break
+        #if i==80:
+        #    break
         tmp_data[article['article_id']] = (article['article_title'], article['content'])
         index_aid[str(i)] = article['article_id']
         print(i)
@@ -50,6 +50,7 @@ def main():
         #print(article)
         if article['article_id'] in corpus_data.keys():
             corpus.append(corpus_data[article['article_id']]['feature'])
+            corpus_data[article['article_id']]['index'] = i
             i = i+1
             continue
         else:
