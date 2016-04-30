@@ -21,7 +21,10 @@ from tornado import gen
 import pymongo
 from pymongo import MongoClient
 
+# custom files
 sys.path.append("../src")
+from recommender import Recommender
+import web_util
 
 DB_IP = "localhost"
 DB_PORT = 27017
@@ -89,11 +92,34 @@ class ScheduleHandler(tornado.web.RequestHandler):
         for key in list(json_obj.keys()):
             print('key: %s , value: %s' % (key, json_obj[key]))
 
-        # new dictionary
-        response_to_send = {}
-        response_to_send['newkey'] = 'hello'
+        #response_to_send = {}
+        #response_to_send['newkey'] = 'hello'
         #print('Response to return')
-        self.write(json.dumps(response_to_send))
+        #self.write(json.dumps(response_to_send))
+        #print('yoooooo')
+        start_date = json_obj['startDate'].split('-')
+        end_date = json_obj['endDate'].split('-')
+        #schedule
+        startTime = datetime(int(start_date[0]),int(start_date[1]),int(start_date[2]),int(json_obj['startTime']))
+        endTime = datetime(int(end_date[0]),int(end_date[1]),int(end_date[2]),int(json_obj['endTime']))
+        recom = Recommender()
+        recom.setTimeInterval(startTime,endTime)
+        recom.setHabit(json_obj['like'])
+        recom.setBudget(json_obj['Budget']) # allow 1,2,3
+        travelList = recom.recommend()
+        print(travelList)
+
+        day = 1
+        travelDict = {}
+        for _list in travelList:
+            travelDict[day] = {}
+            for spot in _list:
+                print(spot)
+                travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,"priceLevel":spot.priceLevel,"topic":spot.topicList,"order":spot.order}
+            day += 1
+        web_util.write_json(travelDict,"travelList.json")
+        #self.write(json_encode(travelDict))
+        self.write(json.dumps(travelDict))
 
 if __name__ == '__main__':
     main()

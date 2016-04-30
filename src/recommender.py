@@ -130,7 +130,7 @@ class Recommender():
                 habit = 0
                 for h in habitDict:
                     if h in term.topicList:
-                        habit += habitDict[h]
+                        habit += int(habitDict[h])
 
             # Calculate price
             if self.budget == 1:
