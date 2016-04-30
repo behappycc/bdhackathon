@@ -2,7 +2,7 @@ import os
 import json
 
 def load_json(path):
-    jsonFile = open(path)
+    jsonFile = open(path, encoding = 'utf8')
     data = json.load(jsonFile)
     jsonFile.close()
 
