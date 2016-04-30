@@ -12,6 +12,7 @@
 from datetime import datetime
 
 from recommender import Recommender
+import web_util
 
 def main():
     startTime = datetime(2016,4,30,8)
@@ -23,6 +24,16 @@ def main():
     recom.setBudget(1) # allow 1,2,3
     travelList = recom.recommend()
     print(travelList)
+
+    day = 1
+    travelDict = {}
+    for _list in travelList:
+        travelDict[day] = {}
+        for spot in _list:
+            print(spot)
+            travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,"priceLevel":spot.priceLevel,"topic":spot.topicList,"order":spot.order}
+        day += 1
+    web_util.write_json(travelDict,"travelList.json")
 
 if __name__ == '__main__':
     main()
