@@ -123,9 +123,9 @@
                             type: 'POST',
                             data: dataToSend,
                             success: function (jsonResponse) {
-                                var objresponse = JSON.parse(jsonResponse);
-                                console.log(objresponse['newkey']);
-                                $("#responsefield").text(objresponse['newkey']);
+                                ans = JSON.parse(jsonResponse);
+                                initTravelTime(document.getElementById("travelTime"));
+                                wayptsChange(1);
                             },
                             error: function () {
                                 $("#responsefield").text("Error to load api");
@@ -832,11 +832,11 @@
         //server response
         var ans;
         var waypts = []
-        loadJSON('static/travelList.json',function(response) {
+        /*loadJSON('static/travelList.json',function(response) {
             ans = JSON.parse(response);
             initTravelTime(document.getElementById("travelTime"));
             wayptsChange(1);
-        });
+        });*/
 
         var today;
         function wayptsChange(selectTime) {
@@ -844,15 +844,27 @@
             today = ans[selectTime];
             todayObj = Object.keys(today);
 
+            var tmp = 999;
             x = document.getElementById("start");
             x.options.length = 0;
-            var new_option = new Option(todayObj[0], today[todayObj[0]].coord);
+            for(var i=0; i < todayObj.length; i++){
+                if (tmp > today[todayObj[i]].order){
+                    tmp = i;
+                }
+            }
+            var new_option = new Option(todayObj[tmp], today[todayObj[tmp]].coord);
             x.options.add(new_option);
-            x.selectedIndex = 0;
 
+            var tmp = -1;
             x = document.getElementById("end");
             x.options.length = 0;
-            var new_option = new Option(todayObj[todayObj.length-1], today[todayObj[todayObj.length-1]].coord);
+            for(var i=0; i < todayObj.length; i++){
+                //if (today[todayObj[i]].order == todayObj.length-1){
+                if (tmp < today[todayObj[i]].order){
+                    tmp = i;
+                }
+            }
+            var new_option = new Option(todayObj[tmp], today[todayObj[tmp]].coord);
             x.options.add(new_option);
 
             for(var i=0; i < todayObj.length; i++){
@@ -864,6 +876,7 @@
         }
 
         function initTravelTime(x) {
+            x.options.length = 0;
             for(var i=1; i <= Object.keys(ans).length; i++){
                 var new_option = new Option("第"+(i)+"天", i);
                 x.options.add(new_option);
