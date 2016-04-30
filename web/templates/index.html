@@ -558,11 +558,13 @@
             
             <form role="form" id="travelForm">
                 <div class="col-md-6">
-                    <b>Date: </b>
-                    <input type="text" id="Date" />
-                    <b>Duration: </b>
-                    <select id="Duration"></select><br>
-                    
+                    <b>startDate: </b>
+                    <input type="text" id="startDate" class="input">
+                    <b>endDate: </b>
+                    <input type="text" id="endDate" class="input">
+                    <!--<b>Duration: </b>
+                    <select id="Duration"></select><br>-->
+
                     <b>Start Airport: </b>
                     <select id="startAirport"></select>
                     <b>Start Time: </b>
@@ -574,19 +576,15 @@
                     <select id="endTime"></select><br>
                     
                     <b>Budget: </b>
-                    <select id="Budget">
+                    <select id="Budget"  class="selectpicker">
                         <option value="1">低</option>
                         <option value="2">中</option>
                         <option value="3">高</option>
                     </select><br>
                     請勾選你的興趣<br>
                     <div id="checkboxList"></div>
-                    <!--<input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">
-                    <input type="button" value="submit" id="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">-->
+                    <!--<input type="button" value="submit" id="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">-->
                     <input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">
-                    <!--
-                    <input type="button" value="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">
-                    -->
                 </div>
             </form>
 
@@ -760,12 +758,12 @@
                 x.options.add(new_option);
             }
         }
-        function initDuration(x) {
+        /*function initDuration(x) {
             for(var i=5; i<15;i++){
                 var new_option = new Option(i+"天", i);
                 x.options.add(new_option);
             }
-        }
+        }*/
 
         function initCheckbox(id, categoy) {
             var x = document.createElement("input");
@@ -793,8 +791,9 @@
         }
         params = {};
         function sendForm() {
-            params["Duration"] = document.getElementById("Duration").value;
-            params["Date"] = document.getElementById("Date").value;
+            //params["Duration"] = document.getElementById("Duration").value;
+            params["startDate"] = document.getElementById("startDate").value;
+            params["endDate"] = document.getElementById("endDate").value;
             params["startTime"] = document.getElementById("startTime").value;
             params["endTime"] = document.getElementById("endTime").value;
             params["startAirport"] = document.getElementById("startAirport").value;
@@ -811,12 +810,13 @@
             //$("#travelForm").submit();
         }
 
-        $("#Date").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
+        $("#startDate").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
+        $("#endDate").datepicker({dateFormat:"yy-mm-dd",changeMonth: true,changeYear: true});
         initTime(document.getElementById("startTime"))
         initTime(document.getElementById("endTime"))
         initAirport(document.getElementById("startAirport"))
         initAirport(document.getElementById("endAirport"))
-        initDuration(document.getElementById("Duration"))
+        //initDuration(document.getElementById("Duration"))
         var like;
         loadJSON('static/like.json',function(response) {
             like = JSON.parse(response);
