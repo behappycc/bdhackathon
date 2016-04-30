@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        模块1
+# Name:        璅∪?1
 # Purpose:
 #
 # Author:      b9890_000
@@ -48,6 +48,8 @@ class Recommender():
     def setTimeInterval(self,start,end):
         self.startTime = start
         self.endTime = end
+
+        #TODO
         self.travelDays = 3
 
     def setHabit(self,habitDict):
@@ -62,6 +64,10 @@ class Recommender():
     def recommend(self):
         travelList = []
         for day in range(self.travelDays):
+            if day == 0: # The first day, start from airport
+                print("First Day.")
+            elif day == self.travelDays-1: # The last day, keep 6 hours in airport
+                print("Last Day")
             travelList.append([])
 
         return travelList
