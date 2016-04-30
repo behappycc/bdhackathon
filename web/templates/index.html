@@ -520,8 +520,8 @@
                 <div class="col-md-6">
                     <b>Date: </b>
                     <input type="text" id="Date" />
-                    <b>Druation: </b>
-                    <select id="Druation"></select><br>
+                    <b>Duration: </b>
+                    <select id="Duration"></select><br>
                     
                     <b>Start Airport: </b>
                     <select id="startAirport"></select>
@@ -535,14 +535,14 @@
                     
                     <b>Budget: </b>
                     <select id="Budget">
-                        <option value="low">低</option>
-                        <option value="mid">中</option>
-                        <option value="high">高</option>
+                        <option value="1">低</option>
+                        <option value="2">中</option>
+                        <option value="3">高</option>
                     </select><br>
                     請勾選你的興趣<br>
                     <div id="checkboxList"></div>
                     <!--<input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">-->
-                    <input type="button" value="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">
+                    <input type="button" value="submit" id="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">
                 </div>
             </form>
 
@@ -600,6 +600,9 @@
             </div>
         </div>
     </div>
+
+    <b>時間: </b>
+    <select id="travelTime" onchange="travelTimeChange()"></select><br>
     <div id="floating-panel">
         <b>Start: </b>
         <select id="start">
@@ -609,7 +612,7 @@
         <b>End: </b>
         <select id="end">
         <!--<option value="35.829905, 140.390619">成田機場</option>-->
-        <option value="Akihabara, Taito, Tokyo 110-0006日本">秋葉原</option>
+        <option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
         </select>
     </div>
 
@@ -746,7 +749,7 @@
         }
         params = {};
         function sendForm() {
-            params["Druation"] = document.getElementById("Druation").value;
+            params["Duration"] = document.getElementById("Duration").value;
             params["Date"] = document.getElementById("Date").value;
             params["startTime"] = document.getElementById("startTime").value;
             params["endTime"] = document.getElementById("endTime").value;
@@ -769,7 +772,7 @@
         initTime(document.getElementById("endTime"))
         initAirport(document.getElementById("startAirport"))
         initAirport(document.getElementById("endAirport"))
-        initDuration(document.getElementById("Druation"))
+        initDuration(document.getElementById("Duration"))
         var like;
         loadJSON('static/like.json',function(response) {
             like = JSON.parse(response);
@@ -783,28 +786,50 @@
         //server response
         var ans;
         var waypts = []
-        loadJSON('static/term.json',function(response) {
+        loadJSON('static/travelList.json',function(response) {
             ans = JSON.parse(response);
+            initTravelTime(document.getElementById("travelTime"));
+            wayptsChange(1);
+        });
 
-            ansObj = Object.keys(ans);
+        var today;
+        function wayptsChange(selectTime) {
+            waypts=[]
+            today = ans[selectTime];
+            todayObj = Object.keys(today);
+
             x = document.getElementById("start");
             x.options.length = 0;
-            var new_option = new Option(ansObj[0], ans[ansObj[0]].coord);
+            var new_option = new Option(todayObj[0], today[todayObj[0]].coord);
             x.options.add(new_option);
+            x.selectedIndex = 0;
 
             x = document.getElementById("end");
             x.options.length = 0;
-            var new_option = new Option(ansObj[ansObj.length-1], ans[ansObj[ansObj.length-1]].coord);
+            var new_option = new Option(todayObj[todayObj.length-1], today[todayObj[todayObj.length-1]].coord);
             x.options.add(new_option);
 
-            for(var i=1; i < 5; i++){
+            for(var i=0; i < todayObj.length; i++){
                 waypts.push({
-                    location: ans[ansObj[i]].coord+"",
+                    location: today[todayObj[i]].coord+"",
                     stopover: true
                 });
             }
-        });
+        }
+
+        function initTravelTime(x) {
+            for(var i=1; i <= Object.keys(ans).length; i++){
+                var new_option = new Option("第"+(i)+"天", i);
+                x.options.add(new_option);
+            }
+        }
+        function travelTimeChange() {
+            selectTime = document.getElementById("travelTime").value;
+            wayptsChange(selectTime)
+        }
     </script>
+
+
     <script type="text/javascript">
         var test;
         function initMap() {
@@ -829,6 +854,8 @@
             var onChangeHandler = function() {
                 calculateAndDisplayRoute(directionsDisplay, directionsService, markerArray, stepDisplay, map);
             };
+            document.getElementById('submit').addEventListener('click', onChangeHandler);
+            document.getElementById('travelTime').addEventListener('change', onChangeHandler);
             document.getElementById('start').addEventListener('change', onChangeHandler);
             document.getElementById('end').addEventListener('change', onChangeHandler);
         }
