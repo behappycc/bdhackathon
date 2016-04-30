@@ -34,7 +34,11 @@
     <!-- Magnific Popup core CSS file -->
     <link rel="stylesheet" href="static/css/magnific-popup.css"> 
     
-    <script src="static/js/modernizr-2.8.3.min.js"></script>  <!-- Modernizr /-->
+    <script src="static/js/modernizr-2.8.3.min.js"></script> 
+
+    <script type="text/javascript" src="static/js/index.js"></script>
+
+     <!-- Modernizr /-->
     <!--[if IE 9]>
         <script src="js/PIE_IE9.js"></script>
     <![endif]-->
@@ -102,6 +106,32 @@
     <script src="http://code.jquery.com/jquery-1.9.1.js" ></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" ></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // initialize the viewer
+            $('#submit').click(function (event) {
+                sendForm()
+                var dataToSend = JSON.stringify(params);
+                $.ajax(
+                        {
+                            url: '/schedule',
+                            type: 'POST',
+                            data: dataToSend,
+                            success: function (jsonResponse) {
+                                var objresponse = JSON.parse(jsonResponse);
+                                console.log(objresponse['newkey']);
+                                $("#responsefield").text(objresponse['newkey']);
+                            },
+                            error: function () {
+                                $("#responsefield").text("Error to load api");
+                            }
+                        });
+                event.preventDefault();
+            });
+        });
+    </script>
+
 </head>
 
 <body id="home">
@@ -505,6 +535,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Test -->
+    <form class="well form-inline">
+
+                <input id="input1" type="text" class="input" placeholder="This text will get returned">
+                <input id="input2" type="text" class="input" placeholder="This text won't">
+
+                <button id="runajax" class="btn btn-primary">Run</button>
+            </form>
+            <span id="responsefield"></span>
     
     <!-- Contact -->
     <div id="contact" class="content-section-a">
@@ -541,8 +581,10 @@
                     </select><br>
                     請勾選你的興趣<br>
                     <div id="checkboxList"></div>
-                    <!--<input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">-->
+                    <input type="submit" name="submit" id="submit" class="btn wow tada btn-embossed btn-primary pull-right">
+                    <!--
                     <input type="button" value="submit" onclick="sendForm();"class="btn wow tada btn-embossed btn-primary pull-left">
+                    -->
                 </div>
             </form>
 
