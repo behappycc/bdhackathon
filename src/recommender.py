@@ -54,18 +54,23 @@ class Recommender():
         self.loadTerms()
 
     def loadTerms(self):
-        print(srcDir)
         termFile = os.path.join(srcDir,"nlp","new_term.json")
         terms = web_util.load_json(termFile)
         airportFile = os.path.join(srcDir,"nlp","airport.json")
         airport = web_util.load_json(airportFile)
+        hotelFile = os.path.join(srcDir,"nlp","hotel.json")
+        hotels = web_util.load_json(hotelFile)
 
         self.restaurantList = []
         self.spotList = []
-        print(airport)
+        self.hotelList =[]
+
         for air in airport:
             self.airport = View((air),airport[air])
-        self.hotelList = [self.airport]
+
+        for hotel in hotels:
+            view = View(hotel,hotels[hotel])
+            self.hotelList.append(view)
 
         for term in terms:
             if terms[term]["popularity"] == 0: # ignore
@@ -156,10 +161,6 @@ class Recommender():
             returnList = sorted(returnList,key=lambda x: x[1])
             recommendSpot = returnList[0][0]
             tlist = [x[0] for x in recommendSpot.topicList]
-            print("tlist = ",tlist,recommendSpot)
-##            if "7" not in tlist and "8" not in tlist:
-##                # not remove airport and hotel
-            print("remove ",recommendSpot)
             termList.remove(recommendSpot)
 
             return returnList[0][0]

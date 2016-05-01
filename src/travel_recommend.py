@@ -30,7 +30,6 @@ def main():
     for _list in travelList:
         travelDict[day] = {}
         for spot in _list:
-            print(spot)
             travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,"priceLevel":spot.priceLevel,"topic":spot.topicList,"order":spot.order}
         day += 1
     #web_util.write_json(travelDict,"travelList.json")
