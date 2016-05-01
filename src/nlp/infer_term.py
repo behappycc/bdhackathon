@@ -3,6 +3,7 @@ sys.path.append("../")
 from web_util import load_json, write_json
 from db_util import search_db
 from location_converter import translate_location
+from search_api import get_geocode, get_nearby
 import pymongo
 from pymongo import MongoClient
 
@@ -68,8 +69,32 @@ if __name__ == '__main__':
     collection = client['bdhackthon']['Japan_Travel']
     
     new_term_data = {}
+    terms = set()
+    with open('candidate.txt', encoding='utf-8') as f:
+        place_names = f.readlines()
+        for name in place_names:
+            terms.add(name.strip())
     term_data = load_json('term.json')
-    for term in term_data.keys():
+    for k in term_data.keys():
+        terms.add(k)
+    print(len(terms), terms)
+    for term in terms:
+        geocode = get_geocode(term)
+        if len(geocode) > 0:
+            loc = geocode[0].get('geometry').get('location')
+            nearby_places = get_nearby(loc, radius=1000)
+            total_price = 0
+            num_price = 0
+            for place in nearby_places:
+                if place.get('price_level'):
+                    total_price += place.get('price_level')
+                    num_price += 1
+            if num_price == 0:
+                price_level = 1
+            else:
+                price_level = round(total_price/num_price)
+        else:
+            price_level = 1
         tlist, popularity, url, article, ref, coord = infer(collection, term)
         new_term_data[term] = {
             'topic': tlist,
@@ -77,7 +102,9 @@ if __name__ == '__main__':
             'url': url,
             'article': article,
             'ref': ref,
-            'coord': coord
+            'coord': coord,
+            'priceLevel': price_level,
+            'synonym': []
         }
         write_json(new_term_data, 'new_term.json')
         category = load_json('category.json')
@@ -88,6 +115,4 @@ if __name__ == '__main__':
             print(category[k], v)
         print('ref:', ref)
         print('coord:', coord)
-    #term = '赤城神社'
-    #term = '格拉斯麗'
-    #tlist, popularity, url, article, ref, coord = infer(collection, term)
+        print('priceLevel:', price_level)
