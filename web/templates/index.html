@@ -55,6 +55,7 @@
         <script src="js/html5shiv.js"></script>
     <![endif]-->
     <style type="text/css">
+    	tab1 { padding-left: 4em; }
         .table{
             border:5px #D9DED1 double;
             padding:5px;
@@ -103,7 +104,7 @@
         #floating-panel {
             position: absolute;
             //top: 10px;
-            left: 45%;
+            left: 60%;
             z-index: 5;
             background-color: #fff;
             padding: 5px;
@@ -461,16 +462,16 @@
                     <b>startDate: </b>
                     <input type="text" id="startDate" class="input">
                     <b>endDate: </b>
-                    <input type="text" id="endDate" class="input">
+                    <input type="text" id="endDate" class="input"><br>
 
                     <b>Start Airport: </b>
                     <select id="startAirport"></select>
                     <b>Start Time: </b>
                     <select id="startTime"></select><br>
-                    
-                    <b>End Airport: </b>
+
+                    <b>Final Airport: </b>
                     <select id="endAirport"></select>
-                    <b>End Time: </b>
+                    <b>Final Time: </b>
                     <select id="endTime"></select><br>
                     
                     <b>Budget: </b>
@@ -542,15 +543,14 @@
 
     <b>時間: </b>
     <select id="travelTime" onchange="travelTimeChange()"></select><br>
-    
 
-
-    <div id="map" style="float:right;width:65%; height:85%"></div>
-    <div style="float:left;width:35%;">
+    <div id="map" style="float:right;width:60%; height:75%"></div>
+    <div style="float:left;width:40%;">
         <table id="table" class='table' border='5' bgcolor='#88EEEE'>
         <!--<TH>place</TH><TH>popularity</TH><TH>topic</TH><TH>priceLevel</TH>-->
         </table>
     </div>
+
     <div id="floating-panel" style="float:right;width:30%;">
 	        <b>Start: </b>
 	        <select id="start">
@@ -563,10 +563,9 @@
 	        <option value="日本〒100-0005 Tokyo, Chiyoda, Marunouchi, 1 丁目 呑んき１丸の内北口店 9">東京車站</option>
 	        </select>
 	</div>
-    <div id="directionsPanel" style="float:right;width:15%;height:85%"></div>
+	<div id="warnings-panel" style="float:right;width:85%;height:15%"></div>    
     &nbsp;
-    <div id="warnings-panel" style="float:right;width:85%;height:15%"></div>    
-    
+    <div id="directionsPanel" style="float:right;width:15%;height:85%"></div>
     
     <!-- Footer -->
     <footer class="text-center">
@@ -808,6 +807,7 @@
 		    var popularity = row.insertCell(1);
 		    var topic = row.insertCell(2);
 		    var priceLevel = row.insertCell(3);
+		    var weather = row.insertCell(4);
 		    place.innerHTML = "地點";
 		    place.setAttribute("class", "setcolor");
 		    popularity.innerHTML = "人氣";
@@ -816,6 +816,8 @@
 		    topic.setAttribute("class", "setcolor");
 		    priceLevel.innerHTML = "價位";
 		    priceLevel.setAttribute("class", "setcolor");
+		    weather.innerHTML="weather"
+		    weather.setAttribute("class", "setcolor");
 
 		    todayObj = Object.keys(today);
             for(var n=0; n < todayObj.length; n++){
@@ -826,6 +828,7 @@
 		                var popularity = row.insertCell(1);
 		                var topic = row.insertCell(2);
 		                var priceLevel = row.insertCell(3);
+		                var weather = row.insertCell(4);
 		                
 		                place.innerHTML = todayObj[i];
 		                place.setAttribute("class", "red");
@@ -846,6 +849,7 @@
 		                else if(today[todayObj[i]].priceLevel == 2){priceLevel.innerHTML = "適中"}
 		                else if(today[todayObj[i]].priceLevel == 3){priceLevel.innerHTML = "昂貴"}
 		                else if(today[todayObj[i]].priceLevel == 4){priceLevel.innerHTML = "非常昂貴"}
+		                weather.innerHTML = "<img src='static/img/weather/sun.png' alt='QQ' width='20'>";
 	            	}
             	}
         	}
