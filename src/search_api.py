@@ -1,8 +1,20 @@
 import googlemaps
 import json
+import requests
 
 api_key = 'AIzaSyBUOjTwQ5IqOWmZ2R0YvfDDiEcmja7au3Y'
 gmaps = googlemaps.Client(key=api_key)
+
+APPID='adc66a4a607358e4e7be3cab0bfb0abd'
+
+
+def get_weather(geo_pair):
+    # input : location tuple (lat, lng)
+    # output: weather dict
+    api_url = 'http://api.openweathermap.org/data/2.5/weather?units=metric&lat='\
+              + str(geo_pair[0]) + '&lon=' + str(geo_pair[1]) + '&APPID=' + APPID
+    r = requests.get(api_url)
+    return json.loads(r.text)
 
 
 def get_geocode(input_text):
@@ -55,9 +67,12 @@ def api_test():
             img_url = get_photo_from_place(place)
             print(place.get('name'), place.get('types'), place.get('price_level'), img_url)
 
+    weather_info = get_weather(geocode_to_geopair(get_geocode(input_query)))
+    print(weather_info)
 
 if __name__ == '__main__':
     api_test()
+
 
 
 
