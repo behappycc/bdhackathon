@@ -689,7 +689,7 @@
 		    var popularity = row.insertCell(1);
 		    var topic = row.insertCell(2);
 		    var priceLevel = row.insertCell(3);
-		    var weather = row.insertCell(4);
+		    var weather = row.insertCell(4); 
 		    place.innerHTML = "地點";
 		    place.setAttribute("class", "setcolor");
 		    popularity.innerHTML = "人氣";
@@ -698,7 +698,7 @@
 		    topic.setAttribute("class", "setcolor");
 		    priceLevel.innerHTML = "價位";
 		    priceLevel.setAttribute("class", "setcolor");
-		    weather.innerHTML="weather"
+		    weather.innerHTML="天氣"
 		    weather.setAttribute("class", "setcolor");
 
 		    todayObj = Object.keys(today);
@@ -722,9 +722,10 @@
 		                popularity.innerHTML = stars;
 		                
 		                topic.innerHTML = "";
+		                if(today[todayObj[i]].ref) topic.innerHTML = "<a href='"+today[todayObj[i]].ref+".html"+"' target='_blank'>link</a><br>"
 		                for (var j=0; j < today[todayObj[i]].topic.length; j++) {
-		                	if(like[today[todayObj[i]].topic[j]])
-		               			topic.innerHTML += "<a href='"+ today[todayObj[i]].ref[0]+"' target='_blank'> "+today[todayObj[i]].topic[j]+" </a>";
+		                	if(like[today[ todayObj[i]].topic[j][0] ])
+		               			topic.innerHTML += like[today[ todayObj[i]].topic[j][0] ]+" ";
 		                }
 		                if (today[todayObj[i]].priceLevel == 0){priceLevel.innerHTML = "免費"}
 		                else if(today[todayObj[i]].priceLevel == 1){priceLevel.innerHTML = "便宜"}
