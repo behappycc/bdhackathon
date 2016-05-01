@@ -93,7 +93,7 @@ class Recommender():
         self.endTime = end
 
         self.travelDays = (end-start).days + 1
-        print("travle days = ",self.travelDays)
+        #print("travle days = ",self.travelDays)
 
     def setHabit(self,habitDict):
         self.habitDict = habitDict
