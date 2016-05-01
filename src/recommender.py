@@ -56,6 +56,7 @@ class Recommender():
         self.budget = 0
 
         self.loadTerms()
+        self.maxdis = 0
 
     def loadTerms(self):
         termFile = os.path.join(srcDir,"nlp","new_term.json")
@@ -113,9 +114,13 @@ class Recommender():
         for term in termList:
             # Calculate distance
             dis = distance(currentSpot,term)
+            dis = abs(dis - 18351)/18351
+            if dis > self.maxdis:
+                self.maxdis = dis
+                #print("maxdis = ",self.maxdis)
 
             # Calculate popularity
-            popularity = term.popularity
+            popularity = term.popularity / 1979
 
             # Calculate habit
             if not habitDict:
@@ -125,33 +130,34 @@ class Recommender():
                 for h in habitDict:
                     if h in term.topicList[0]:
                         habit += int(habitDict[h])
+                habit /= 600
 
             # Calculate price
             if self.budget == 1:
                 if term.priceLevel in [0,1]:
-                    price = 5
-                elif term.priceLevel in [2,3]:
-                    price = 3
-                else:
                     price = 1
+                elif term.priceLevel in [2,3]:
+                    price = 0.6
+                else:
+                    price = 0.2
             elif self.budget == 2:
                 if term.priceLevel in [0,1]:
-                    price = 3
+                    price = 0.6
                 elif term.priceLevel in [2,3]:
-                    price = 5
+                    price = 1
                 else:
-                    price = 2
+                    price = 0.4
             elif self.budget == 3:
                 if term.priceLevel in [0,1]:
-                    price = 1
+                    price = 0.2
                 elif term.priceLevel in [2,3]:
-                    price = 3
+                    price = 0.6
                 else:
-                    price = 5
+                    price = 1
 
-            print(currentSpot,term,"dis = ",disWeight*dis," pop = ",popWeight*popularity," price = ",priWeight*price," habit = ",habWeight*habit)
+            #print(currentSpot,term,"dis = ",disWeight*dis," pop = ",popWeight*popularity," price = ",priWeight*price," habit = ",habWeight*habit)
             value = disWeight*dis + popWeight*popularity + priWeight*price + habWeight*habit
-            print("value = ",value)
+            #print("value = ",value)
             returnList.append((term,value))
 
         if not returnList:
