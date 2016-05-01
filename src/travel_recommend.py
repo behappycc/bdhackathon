@@ -16,7 +16,7 @@ import web_util
 
 def main():
     startTime = datetime(2016,4,30,8)
-    endTime = datetime(2016,5,2,18)
+    endTime = datetime(2016,5,1,18)
 
     recom = Recommender()
     recom.setTimeInterval(startTime,endTime)

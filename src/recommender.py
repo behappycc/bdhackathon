@@ -35,7 +35,7 @@ class View():
         self.popularity = term["popularity"]
         self.coord = term["coord"]
         self.topicList = term["topic"]
-        self.priceLevel = term["priceLevel"]
+        self.priceLevel = 0#term["priceLevel"]
         self.order = -1
 
     def __str__(self):
@@ -55,32 +55,33 @@ class Recommender():
 
     def loadTerms(self):
         print(srcDir)
-        termFile = os.path.join(srcDir,"nlp","term.json")
+        termFile = os.path.join(srcDir,"nlp","new_term.json")
         terms = web_util.load_json(termFile)
-        categoryFile = os.path.join(srcDir,"nlp","category.json")
-        categories = web_util.load_json(categoryFile)
+        airportFile = os.path.join(srcDir,"nlp","airport.json")
+        airport = web_util.load_json(airportFile)
 
         self.restaurantList = []
         self.spotList = []
-        self.shoppingList = []
-        self.taxfreeList = []
-        self.airportList = []
-        self.hotelList = []
+        print(airport)
+        for air in airport:
+            self.airport = View((air),airport[air])
+        self.hotelList = [self.airport]
 
         for term in terms:
+            if terms[term]["popularity"] == 0: # ignore
+                continue
+
             view = View(term,terms[term])
-            for topic in terms[term]["topic"]:
-                if topic == "0":
+            for topic in view.topicList:
+                if topic[0] == "0":
                     self.restaurantList.append(view)
-                elif topic == "6":
-                    self.taxfreeList.append(view)
-                elif topic == "7":
-                    self.airportList.append(view)
-                elif topic == "8":
-                    self.hotelList.append(view)
-                else:
-                    if view not in self.spotList:
-                        self.spotList.append(view)
+                elif topic[0] == "1":
+                    self.spotList.append(view)
+
+        print("res = ",self.restaurantList)
+        print("air = ",self.airport)
+        print("hotel = ",self.hotelList)
+        print("spot = ",self.spotList)
 
     def setTimeInterval(self,start,end):
         self.startTime = start
@@ -118,7 +119,7 @@ class Recommender():
             else:
                 habit = 0
                 for h in habitDict:
-                    if h in term.topicList:
+                    if h in term.topicList[0]:
                         habit += int(habitDict[h])
 
             # Calculate price
@@ -153,161 +154,125 @@ class Recommender():
             return None
         else:
             returnList = sorted(returnList,key=lambda x: x[1])
-            tlist = returnList[0][0].topicList
-            if "7" not in tlist and "8" not in tlist:
-                # not remove airport and hotel
-                termList.remove(returnList[0][0])
+            recommendSpot = returnList[0][0]
+            tlist = [x[0] for x in recommendSpot.topicList]
+            print("tlist = ",tlist,recommendSpot)
+##            if "7" not in tlist and "8" not in tlist:
+##                # not remove airport and hotel
+            print("remove ",recommendSpot)
+            termList.remove(recommendSpot)
 
             return returnList[0][0]
 
+    def addSpot(self,spot):
+        if spot:
+            spot.order = self.order
+            self.order += 1
+            self.dayList.append(spot)
+
     def recommend(self):
         travelList = []
-        currentSpot = self.airportList[0] # default airport
+        currentSpot = self.airport # default airport
 
         for day in range(self.travelDays):
-            dayList = []
-            order = 0
+            self.dayList = []
+            self.order = 0
             if day == 0: # The first day
                 print("First Day.")
                 # start from airport
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 09:00~12:00 spot
                 if self.startTime.hour < 12:
                     currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 12:00~1330 launch
                 if self.startTime.hour < 14:
                     currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 1330~1600 spot
                 if self.startTime.hour < 16:
                     currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 1600~1800 spot
                 if self.startTime.hour < 18:
                     currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 1800~1930 dinner
                 if self.startTime.hour < 20:
                     currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 1930~2100 spot
                 if self.startTime.hour < 21:
                     currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 2100~... sleep
                 currentSpot = self.evaluate(currentSpot,self.hotelList)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
             elif day == self.travelDays-1: # The last day, keep 6 hours in airport
                 print("Last Day.")
                 # 09:00~12:00 spot
                 if self.endTime.hour-3 > 9:
                     currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 12:00~1330 launch
                 if self.endTime.hour-3 > 12:
                     currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 1330~1600 spot
                 if self.endTime.hour-3 > 14:
                     currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
                 # 18:00~1930 launch
                 if self.endTime.hour-3 > 18:
                     currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                    currentSpot.order = order
-                    order += 1
-                    dayList.append(currentSpot)
+                    self.addSpot(currentSpot)
 
-                # Shop at tax-free shop 1hr
-                currentSpot = self.evaluate(currentSpot,self.taxfreeList)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
-
-                # end to airport and keep 2hr for waiting check in
-                currentSpot = self.airportList[0]
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                # end to airport and keep 3hr for waiting check in
+                currentSpot = self.airport
+                self.addSpot(currentSpot)
 
             else:
                 print("Middle Day.")
                 # 09:00~12:00 spot
                 currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 12:00~1330 launch
                 currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 1330~1600 spot
                 currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 1600~1800 spot
                 currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 1800~1930 dinner
                 currentSpot = self.evaluate(currentSpot,self.restaurantList)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 1930~2100 spot
                 currentSpot = self.evaluate(currentSpot,self.spotList,habitDict=self.habitDict)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
+                self.addSpot(currentSpot)
 
                 # 2100~... sleep
                 currentSpot = self.evaluate(currentSpot,self.hotelList)
-                currentSpot.order = order
-                order += 1
-                dayList.append(currentSpot)
-            travelList.append(dayList)
+                self.addSpot(currentSpot)
+
+            travelList.append(self.dayList)
 
         return travelList
 
