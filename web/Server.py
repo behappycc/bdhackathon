@@ -25,6 +25,7 @@ from pymongo import MongoClient
 sys.path.append("../src")
 from recommender import Recommender
 import web_util
+import search_api
 
 DB_IP = "localhost"
 DB_PORT = 27017
@@ -115,7 +116,13 @@ class ScheduleHandler(tornado.web.RequestHandler):
             travelDict[day] = {}
             for spot in _list:
                 #print(spot)
-                travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,"priceLevel":spot.priceLevel,"topic":spot.topicList,"order":spot.order,"ref":spot.ref}
+                weather_icon = search_api.get_weather(spot.coord).get('weather')[0].get('icon')
+                weather_icon_url = 'http://openweathermap.org/img/w/' + weather_icon + '.png'
+                print('weather_icon_url = ' + weather_icon_url)
+                travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,
+                                              "priceLevel":spot.priceLevel,"topic":spot.topicList,
+                                              "order":spot.order,"ref":spot.ref,
+                                              "weather": weather_icon_url}
             day += 1
         #web_util.write_json(travelDict,"travelList.json")
         #self.write(json_encode(travelDict))
