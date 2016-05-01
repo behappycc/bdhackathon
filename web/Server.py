@@ -107,17 +107,17 @@ class ScheduleHandler(tornado.web.RequestHandler):
         recom.setHabit(json_obj['like'])
         recom.setBudget(json_obj['Budget']) # allow 1,2,3
         travelList = recom.recommend()
-        print(travelList)
+        #print(travelList)
 
         day = 1
         travelDict = {}
         for _list in travelList:
             travelDict[day] = {}
             for spot in _list:
-                print(spot)
+                #print(spot)
                 travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,"priceLevel":spot.priceLevel,"topic":spot.topicList,"order":spot.order}
             day += 1
-        web_util.write_json(travelDict,"travelList.json")
+        #web_util.write_json(travelDict,"travelList.json")
         #self.write(json_encode(travelDict))
         self.write(json.dumps(travelDict))
 

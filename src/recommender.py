@@ -87,11 +87,6 @@ class Recommender():
                 elif topic[0] == "1":
                     self.spotList.append(view)
 
-        print("res = ",self.restaurantList)
-        print("air = ",self.airport)
-        print("hotel = ",self.hotelList)
-        print("spot = ",self.spotList)
-
     def setTimeInterval(self,start,end):
         self.startTime = start
         self.endTime = end
