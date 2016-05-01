@@ -607,41 +607,19 @@
             }
             x.selectedIndex = 0;
 
-            
+            tmp = 0;
             x = document.getElementById("end");
             x.options.length = 0;
             for(var n=0; n < todayObj.length; n++){
             	for(var i=0; i < todayObj.length; i++){
 	            	if(today[todayObj[i]].order == n){
-	            		tmp = n;
+	            		tmp +=1;
 		            	var new_option = new Option(todayObj[i], today[todayObj[i]].coord);
 		            	x.options.add(new_option);
 		            }
 		        }
             }
-            x.selectedIndex = tmp;
-
-            /*var tmp = 999;
-            x = document.getElementById("start");
-            x.options.length = 0;
-            for(var i=0; i < todayObj.length; i++){
-                if (tmp > today[todayObj[i]].order){
-                    tmp = i;
-                }
-            }
-            var new_option = new Option(todayObj[tmp], today[todayObj[tmp]].coord);
-            x.options.add(new_option);
-
-            var tmp = -1;
-            x = document.getElementById("end");
-            x.options.length = 0;
-            for(var i=0; i < todayObj.length; i++){
-                if (tmp < today[todayObj[i]].order){
-                    tmp = i;
-                }
-            }
-            var new_option = new Option(todayObj[tmp], today[todayObj[tmp]].coord);
-            x.options.add(new_option);*/
+            x.selectedIndex = Math.max(tmp-1, 0);
 
             for(var n=0; n < todayObj.length; n++){
             	for(var i=0; i < todayObj.length; i++){
@@ -751,8 +729,8 @@
             
             // Listen to change events from the start and end lists.
             var onChangeHandler = function() {
-            	waypts=[];
                 calculateAndDisplayRoute(directionsDisplay, directionsService, markerArray, stepDisplay, map);
+                waypts=[];
             };
             document.getElementById('submit').addEventListener('click', onChangeHandler);
             document.getElementById('travelTime').addEventListener('change', onChangeHandler);
