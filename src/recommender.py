@@ -149,9 +149,9 @@ class Recommender():
                 else:
                     price = 5
 
-            print(currentSpot,term,"dis = ",disWeight*dis," pop = ",popWeight*popularity," price = ",priWeight*price," habit = ",habWeight*habit)
+            #print(currentSpot,term,"dis = ",disWeight*dis," pop = ",popWeight*popularity," price = ",priWeight*price," habit = ",habWeight*habit)
             value = disWeight*dis + popWeight*popularity + priWeight*price + habWeight*habit
-            print("value = ",value)
+            #print("value = ",value)
             returnList.append((term,value))
 
         if not returnList:

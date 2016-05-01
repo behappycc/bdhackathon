@@ -624,13 +624,13 @@
             for(var n=0; n < todayObj.length; n++){
             	for(var i=0; i < todayObj.length; i++){
 	            	if(today[todayObj[i]].order == n){
-	            		tmp = i;
+	            		tmp = n;
 		            	var new_option = new Option(todayObj[i], today[todayObj[i]].coord);
 		            	x.options.add(new_option);
 		            }
 		        }
             }
-            x.selectedIndex = todayObj.length-1;
+            x.selectedIndex = tmp;
 
             /*var tmp = 999;
             x = document.getElementById("start");
@@ -724,7 +724,7 @@
 		                topic.innerHTML = "";
 		                for (var j=0; j < today[todayObj[i]].topic.length; j++) {
 		                	if(like[today[todayObj[i]].topic[j]])
-		               			topic.innerHTML += "<a href='#' target='_blank'> "+today[todayObj[i]].topic[j]+" </a>";
+		               			topic.innerHTML += "<a href='"+ today[todayObj[i]].ref[0]+"' target='_blank'> "+today[todayObj[i]].topic[j]+" </a>";
 		                }
 		                if (today[todayObj[i]].priceLevel == 0){priceLevel.innerHTML = "免費"}
 		                else if(today[todayObj[i]].priceLevel == 1){priceLevel.innerHTML = "便宜"}
