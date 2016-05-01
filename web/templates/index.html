@@ -721,6 +721,7 @@
         var ans;
         var waypts = [];
         var today;
+        var tmp = 0;
         function wayptsChange(selectTime) {
             waypts=[]
             today = ans[selectTime];
@@ -738,11 +739,13 @@
             }
             x.selectedIndex = 0;
 
+            
             x = document.getElementById("end");
             x.options.length = 0;
             for(var n=0; n < todayObj.length; n++){
             	for(var i=0; i < todayObj.length; i++){
 	            	if(today[todayObj[i]].order == n){
+	            		tmp = i;
 		            	var new_option = new Option(todayObj[i], today[todayObj[i]].coord);
 		            	x.options.add(new_option);
 		            }
@@ -833,10 +836,10 @@
 		                place.innerHTML = todayObj[i];
 		                place.setAttribute("class", "red");
 		                stars = "&#9733;";
-		                if(today[todayObj[i]].popularity > 15){stars +="&#9733;"}
+		                if(today[todayObj[i]].popularity > 10){stars +="&#9733;"}
+		                if(today[todayObj[i]].popularity > 30){stars +="&#9733;"}
 		                if(today[todayObj[i]].popularity > 50){stars +="&#9733;"}
-		                if(today[todayObj[i]].popularity > 100){stars +="&#9733;"}
-		                if(today[todayObj[i]].popularity > 400){stars +="&#9733;"}
+		                if(today[todayObj[i]].popularity > 200){stars +="&#9733;"}
 		                popularity.innerHTML = stars;
 		                
 		                topic.innerHTML = "";
@@ -849,7 +852,8 @@
 		                else if(today[todayObj[i]].priceLevel == 2){priceLevel.innerHTML = "適中"}
 		                else if(today[todayObj[i]].priceLevel == 3){priceLevel.innerHTML = "昂貴"}
 		                else if(today[todayObj[i]].priceLevel == 4){priceLevel.innerHTML = "非常昂貴"}
-		                weather.innerHTML = "<img src='static/img/weather/sun.png' alt='QQ' width='20'>";
+
+		                weather.innerHTML = "<img src='static/img/weather/sun.png' title='sun' alt='sun' width='20'>";
 	            	}
             	}
         	}
