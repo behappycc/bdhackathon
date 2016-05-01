@@ -35,8 +35,12 @@ class View():
         self.popularity = term["popularity"]
         self.coord = term["coord"]
         self.topicList = term["topic"]
-        self.priceLevel = 0#term["priceLevel"]
+        self.priceLevel = term["priceLevel"]
         self.order = -1
+        if not term["ref"][0]:
+            self.ref = ""
+        else:
+            self.ref = term["url"]+term["ref"][0]
 
     def __str__(self):
         return self.name
@@ -52,6 +56,7 @@ class Recommender():
         self.budget = 0
 
         self.loadTerms()
+        self.maxdis = 0
 
     def loadTerms(self):
         termFile = os.path.join(srcDir,"nlp","new_term.json")
@@ -83,11 +88,6 @@ class Recommender():
                 elif topic[0] == "1":
                     self.spotList.append(view)
 
-        print("res = ",self.restaurantList)
-        print("air = ",self.airport)
-        print("hotel = ",self.hotelList)
-        print("spot = ",self.spotList)
-
     def setTimeInterval(self,start,end):
         self.startTime = start
         self.endTime = end
@@ -106,17 +106,21 @@ class Recommender():
 
     def evaluate(self,currentSpot,termList,habitDict=None):
         returnList = []
-        disWeight = 0.02
-        popWeight = 0.1
-        habWeight = 5
-        priWeight = 2
+        disWeight = 100
+        popWeight = 75
+        habWeight = 50
+        priWeight = 25
 
         for term in termList:
             # Calculate distance
             dis = distance(currentSpot,term)
+            dis = abs(dis - 18351)/18351
+            if dis > self.maxdis:
+                self.maxdis = dis
+                #print("maxdis = ",self.maxdis)
 
             # Calculate popularity
-            popularity = term.popularity
+            popularity = term.popularity / 1979
 
             # Calculate habit
             if not habitDict:
@@ -126,31 +130,32 @@ class Recommender():
                 for h in habitDict:
                     if h in term.topicList[0]:
                         habit += int(habitDict[h])
+                habit /= 600
 
             # Calculate price
             if self.budget == 1:
                 if term.priceLevel in [0,1]:
-                    price = 5
-                elif term.priceLevel in [2,3]:
-                    price = 3
-                else:
                     price = 1
+                elif term.priceLevel in [2,3]:
+                    price = 0.6
+                else:
+                    price = 0.2
             elif self.budget == 2:
                 if term.priceLevel in [0,1]:
-                    price = 3
+                    price = 0.6
                 elif term.priceLevel in [2,3]:
-                    price = 5
+                    price = 1
                 else:
-                    price = 2
+                    price = 0.4
             elif self.budget == 3:
                 if term.priceLevel in [0,1]:
-                    price = 1
+                    price = 0.2
                 elif term.priceLevel in [2,3]:
-                    price = 3
+                    price = 0.6
                 else:
-                    price = 5
+                    price = 1
 
-            #print(currentSpot,term,"dis = ",dis," pop = ",popularity," price = ",price," habit = ",habit)
+            #print(currentSpot,term,"dis = ",disWeight*dis," pop = ",popWeight*popularity," price = ",priWeight*price," habit = ",habWeight*habit)
             value = disWeight*dis + popWeight*popularity + priWeight*price + habWeight*habit
             #print("value = ",value)
             returnList.append((term,value))
