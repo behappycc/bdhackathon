@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        璅∪?1
+# Name:        ??1
 # Purpose:
 #
 # Author:      b9890_000
@@ -33,7 +33,7 @@ def main():
             print(spot)
             travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,"priceLevel":spot.priceLevel,"topic":spot.topicList,"order":spot.order}
         day += 1
-    web_util.write_json(travelDict,"travelList.json")
+    #web_util.write_json(travelDict,"travelList.json")
 
 if __name__ == '__main__':
     main()

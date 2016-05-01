@@ -34488,23 +34488,6 @@
         ],
         "url": "https://www.ptt.cc/bbs/Japan_Travel/"
     },
-<<<<<<< HEAD
-    "成田免稅商店": {
-        "article": {},
-        "coord": [],
-        "popularity": 0,
-        "ref": {},
-        "topic": [],
-        "url": ""
-    },
-    "日本科學未來館": {
-        "article": {
-            "0": [
-                "M.1261043017.A.209"
-            ],
-            "1": [
-                "M.1261043017.A.209"
-=======
     "銀座": {
         "article": {
             "0": [
@@ -36368,12 +36351,6 @@
                 "4",
                 18,
                 0.01
->>>>>>> 1efe401edd9db456572e7b0d5c45378daffbf9cd
-            ],
-            [
-                "7",
-                14,
-                0.0078
             ]
         ],
         "url": "https://www.ptt.cc/bbs/Japan_Travel/"
