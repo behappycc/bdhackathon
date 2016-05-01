@@ -35,8 +35,12 @@ class View():
         self.popularity = term["popularity"]
         self.coord = term["coord"]
         self.topicList = term["topic"]
-        self.priceLevel = 0#term["priceLevel"]
+        self.priceLevel = term["priceLevel"]
         self.order = -1
+        if not term["ref"][0]:
+            self.ref = ""
+        else:
+            self.ref = term["url"]+term["ref"][0]
 
     def __str__(self):
         return self.name
@@ -106,10 +110,10 @@ class Recommender():
 
     def evaluate(self,currentSpot,termList,habitDict=None):
         returnList = []
-        disWeight = 0.02
-        popWeight = 0.1
-        habWeight = 5
-        priWeight = 2
+        disWeight = 100
+        popWeight = 75
+        habWeight = 50
+        priWeight = 25
 
         for term in termList:
             # Calculate distance
@@ -150,9 +154,9 @@ class Recommender():
                 else:
                     price = 5
 
-            #print(currentSpot,term,"dis = ",dis," pop = ",popularity," price = ",price," habit = ",habit)
+            print(currentSpot,term,"dis = ",disWeight*dis," pop = ",popWeight*popularity," price = ",priWeight*price," habit = ",habWeight*habit)
             value = disWeight*dis + popWeight*popularity + priWeight*price + habWeight*habit
-            #print("value = ",value)
+            print("value = ",value)
             returnList.append((term,value))
 
         if not returnList:
