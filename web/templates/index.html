@@ -37,6 +37,10 @@
     <script src="static/js/modernizr-2.8.3.min.js"></script> 
 
     <script type="text/javascript" src="static/js/index.js"></script>
+    
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
      <!-- Modernizr /-->
     <!--[if IE 9]>
@@ -51,11 +55,14 @@
     <![endif]-->
     <style type="text/css">
         .table{
-            border:5px #FFAA55 double;
+            border:5px #D9DED1 double;
             padding:5px;
         }
         .table td.red{
             color:red;
+        }
+        .table td.setcolor{
+            color:#4169E1;
         }
         table{
             margin-left:auto; 
@@ -64,7 +71,7 @@
         td{
             text-align:center;
             font-weight:bolder;
-            font-size: 20px;
+            font-size: 19px;
         }
         #picture{
             text-align:center;
@@ -95,7 +102,7 @@
         #floating-panel {
             position: absolute;
             //top: 10px;
-            left: 60%;
+            left: 45%;
             z-index: 5;
             background-color: #fff;
             padding: 5px;
@@ -513,8 +520,7 @@
                     <address>
                     <h3>BL Lab618</h3>
                     <p class="lead">
-                    <a href="https://www.google.com.tw/maps/place/%E8%87%BA%E7%81%A3%E5%A4%A7%E5%AD%B8/">
-                    NTU<br>
+                    <a href="https://www.google.com.tw/maps/place/%E8%87%BA%E7%81%A3%E5%A4%A7%E5%AD%B8/" target='_blank'>NTU<br>
                     10617台北市 大安區羅斯福路四段1號</a><br>
                     Name: Kobe不要退休<br>
                     Phone: XXX-XXX-XXXX<br>
@@ -541,7 +547,7 @@
     <div id="map" style="float:right;width:65%; height:85%"></div>
     <div style="float:left;width:35%;">
         <table id="table" class='table' border='5' bgcolor='#88EEEE'>
-        <TH>place</TH><TH>popularity</TH><TH>topic</TH><TH>priceLevel</TH>
+        <!--<TH>place</TH><TH>popularity</TH><TH>topic</TH><TH>priceLevel</TH>-->
         </table>
     </div>
     <div id="floating-panel" style="float:right;width:30%;">
@@ -631,10 +637,10 @@
         }
 
         function initAirport(x) {
-            var new_option = new Option("羽田機場", 0);
+            var new_option = new Option("成田機場", 0);
             x.options.add(new_option);
-            var new_option = new Option("成田機場", 1);
-            x.options.add(new_option);
+            //var new_option = new Option("羽田機場", 1);
+            //x.options.add(new_option);
         }
         function initTime(x) {
             for(var i=0; i<24;i++){
@@ -713,14 +719,38 @@
     <script type="text/javascript">
         //server response
         var ans;
-        var waypts = []
+        var waypts = [];
         var today;
         function wayptsChange(selectTime) {
             waypts=[]
             today = ans[selectTime];
             todayObj = Object.keys(today);
 
-            var tmp = 999;
+            x = document.getElementById("start");
+            x.options.length = 0;
+            for(var n=0; n < todayObj.length; n++){
+            	for(var i=0; i < todayObj.length; i++){
+	            	if(today[todayObj[i]].order == n){
+		            	var new_option = new Option(todayObj[i], today[todayObj[i]].coord);
+		            	x.options.add(new_option);
+		            }
+		        }
+            }
+            x.selectedIndex = 0;
+
+            x = document.getElementById("end");
+            x.options.length = 0;
+            for(var n=0; n < todayObj.length; n++){
+            	for(var i=0; i < todayObj.length; i++){
+	            	if(today[todayObj[i]].order == n){
+		            	var new_option = new Option(todayObj[i], today[todayObj[i]].coord);
+		            	x.options.add(new_option);
+		            }
+		        }
+            }
+            x.selectedIndex = todayObj.length-1;
+
+            /*var tmp = 999;
             x = document.getElementById("start");
             x.options.length = 0;
             for(var i=0; i < todayObj.length; i++){
@@ -735,20 +765,24 @@
             x = document.getElementById("end");
             x.options.length = 0;
             for(var i=0; i < todayObj.length; i++){
-                //if (today[todayObj[i]].order == todayObj.length-1){
                 if (tmp < today[todayObj[i]].order){
                     tmp = i;
                 }
             }
             var new_option = new Option(todayObj[tmp], today[todayObj[tmp]].coord);
-            x.options.add(new_option);
+            x.options.add(new_option);*/
 
-            for(var i=0; i < todayObj.length; i++){
-                waypts.push({
-                    location: today[todayObj[i]].coord+"",
-                    stopover: true
-                });
-            }
+            for(var n=0; n < todayObj.length; n++){
+            	for(var i=0; i < todayObj.length; i++){
+	            	if(today[todayObj[i]].order == n){
+		                waypts.push({
+		                    location: today[todayObj[i]].coord+"",
+		                    stopover: true
+		                });
+		            }
+		        }
+		    }
+
         }
 
         function initTravelTime(x) {
@@ -773,11 +807,16 @@
 		    var popularity = row.insertCell(1);
 		    var topic = row.insertCell(2);
 		    var priceLevel = row.insertCell(3);
-		    place.innerHTML = "place";
-		    popularity.innerHTML = "popularity";
-		    topic.innerHTML = "topic";
-		    priceLevel.innerHTML = "priceLevel";
+		    place.innerHTML = "地點";
+		    place.setAttribute("class", "setcolor");
+		    popularity.innerHTML = "人氣";
+		    popularity.setAttribute("class", "setcolor");
+		    topic.innerHTML = "遊記";
+		    topic.setAttribute("class", "setcolor");
+		    priceLevel.innerHTML = "價位";
+		    priceLevel.setAttribute("class", "setcolor");
 
+		    todayObj = Object.keys(today);
             for(var n=0; n < todayObj.length; n++){
             	for(var i=0; i < todayObj.length; i++){
 	            	if(today[todayObj[i]].order == n){
@@ -788,15 +827,29 @@
 		                var priceLevel = row.insertCell(3);
 		                
 		                place.innerHTML = todayObj[i];
-		                popularity.innerHTML = today[todayObj[i]].popularity;
-		                topic.innerHTML = today[todayObj[i]].topic;
-		                priceLevel.innerHTML = today[todayObj[i]].priceLevel;
+		                place.setAttribute("class", "red");
+		                stars = "&#9733;";
+		                if(today[todayObj[i]].popularity > 15){stars +="&#9733;"}
+		                if(today[todayObj[i]].popularity > 50){stars +="&#9733;"}
+		                if(today[todayObj[i]].popularity > 100){stars +="&#9733;"}
+		                if(today[todayObj[i]].popularity > 400){stars +="&#9733;"}
+		                popularity.innerHTML = stars;
+		                
+		                topic.innerHTML = "";
+		                for (var j=0; j < today[todayObj[i]].topic.length; j++) {
+		                	if(like[today[todayObj[i]].topic[j]])
+		               			topic.innerHTML += "<a href='#' target='_blank'> "+today[todayObj[i]].topic[j]+" </a>";
+		                }
+		                if (today[todayObj[i]].priceLevel == 0){priceLevel.innerHTML = "免費"}
+		                else if(today[todayObj[i]].priceLevel == 1){priceLevel.innerHTML = "便宜"}
+		                else if(today[todayObj[i]].priceLevel == 2){priceLevel.innerHTML = "適中"}
+		                else if(today[todayObj[i]].priceLevel == 3){priceLevel.innerHTML = "昂貴"}
+		                else if(today[todayObj[i]].priceLevel == 4){priceLevel.innerHTML = "非常昂貴"}
 	            	}
             	}
         	}
         }
     </script>
-
 
     <script type="text/javascript">
         var test;
@@ -820,6 +873,7 @@
             
             // Listen to change events from the start and end lists.
             var onChangeHandler = function() {
+            	waypts=[];
                 calculateAndDisplayRoute(directionsDisplay, directionsService, markerArray, stepDisplay, map);
             };
             document.getElementById('submit').addEventListener('click', onChangeHandler);
