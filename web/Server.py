@@ -116,9 +116,10 @@ class ScheduleHandler(tornado.web.RequestHandler):
             travelDict[day] = {}
             for spot in _list:
                 #print(spot)
-                weather_icon = search_api.get_weather(spot.coord).get('weather')[0].get('icon')
-                weather_icon_url = 'http://openweathermap.org/img/w/' + weather_icon + '.png'
-                print('weather_icon_url = ' + weather_icon_url)
+                #weather_icon = search_api.get_weather(spot.coord).get('weather')[0].get('icon')
+                #weather_icon_url = 'http://openweathermap.org/img/w/' + weather_icon + '.png'
+                weather_icon_url= ''
+                # print('weather_icon_url = ' + weather_icon_url)
                 travelDict[day][spot.name] = {"coord":spot.coord,"popularity":spot.popularity,
                                               "priceLevel":spot.priceLevel,"topic":spot.topicList,
                                               "order":spot.order,"ref":spot.ref,
