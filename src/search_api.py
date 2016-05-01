@@ -20,7 +20,9 @@ def geocode_to_geopair(geocode_result):
 
 def get_nearby(location, radius=1000, s_type=None):
     places = gmaps.places_nearby(location=location, radius=radius, type=s_type)
-    return places
+    if places:
+        return places.get('results')
+    return {}
 
 
 def get_photo(photo_ref, maxwidth=400):
@@ -29,37 +31,33 @@ def get_photo(photo_ref, maxwidth=400):
     return url
 
 
-def get_photos_from_places(places, maxwidth=400, debug=False):
-    urls = list()
-    results = places.get('results')
-    for r in results:
-        name = r.get('name')
-        photos = r.get('photos')
-        url = ''
-        if photos is not None:
-            ref = photos[0].get('photo_reference')
-            url = get_photo(ref)
-        urls.append(url)
-        if debug:
-            print(name, url)
-    return urls
+def get_photo_from_place(place, maxwidth=400, debug=False):
+    name = place.get('name')
+    photos = place.get('photos')
+    url = ''
+    if photos is not None:
+        ref = photos[0].get('photo_reference')
+        url = get_photo(ref)
+    if debug:
+        print(name, url)
+    return url
 
 
-def test_api():
-    input_query = '六本木之丘'
+def api_test():
+    input_query = 'Tokyo Tower'
     geocode = get_geocode(input_query)
     if len(geocode) > 0:
         loc = geocode[0].get('geometry').get('location')
         print(loc)
-        nearby_dict = get_nearby(loc, radius=1000, s_type='food')
-        print(json.dumps(nearby_dict))
-        img_urls = get_photos_from_places(nearby_dict, debug=True)
-        '''for img_url in img_urls:
-            print(img_url)'''
+        nearby_places = get_nearby(loc, radius=1000)
+        print(json.dumps(nearby_places))
+        for place in nearby_places:
+            img_url = get_photo_from_place(place)
+            print(place.get('name'), place.get('types'), place.get('price_level'), img_url)
 
 
 if __name__ == '__main__':
-    test_api()
+    api_test()
 
 
 
