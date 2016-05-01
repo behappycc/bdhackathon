@@ -106,7 +106,7 @@ class Recommender():
 
     def evaluate(self,currentSpot,termList,habitDict=None):
         returnList = []
-        disWeight = 100
+        disWeight = 200
         popWeight = 75
         habWeight = 50
         priWeight = 25
@@ -114,10 +114,10 @@ class Recommender():
         for term in termList:
             # Calculate distance
             dis = distance(currentSpot,term)
-            dis = abs(dis - 18351)/18351
-            if dis > self.maxdis:
-                self.maxdis = dis
-                #print("maxdis = ",self.maxdis)
+            if dis > 50:
+                continue
+            else:
+                dis = (50-dis)/50
 
             # Calculate popularity
             popularity = term.popularity / 1979
